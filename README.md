@@ -95,6 +95,9 @@ gridcast-ai/
 │   │   ├── train_wind_advanced.py
 │   │   ├── train_solar_baseline.py
 │   │   └── train_solar_advanced.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   └── renewable_aggregator.py
 │   └── artifacts/              # Ignored generated models, predictions and metrics
 ├── tests/
 │   ├── __init__.py
@@ -106,7 +109,8 @@ gridcast-ai/
 │   ├── test_solar_data_inspector.py
 │   ├── test_solar_preprocessor.py
 │   ├── test_solar_baseline.py
-│   └── test_solar_advanced.py
+│   ├── test_solar_advanced.py
+│   └── test_renewable_aggregator.py
 ├── docs/
 │   ├── .gitkeep
 │   ├── dataset_sources.json
@@ -120,7 +124,8 @@ gridcast-ai/
 │   ├── solar_feature_manifest.json
 │   ├── solar_preprocessing_report.md
 │   ├── solar_baseline_model_report.md
-│   └── solar_advanced_model_report.md
+│   ├── solar_advanced_model_report.md
+│   └── renewable_aggregation.md
 ├── .gitignore
 ├── .env.example
 ├── README.md
@@ -134,7 +139,7 @@ serialized `.joblib`/`.pkl` models are excluded from Git.
 
 ## Current Development Status
 
-**Milestone 5D — Advanced Solar Model Evaluation**
+**Milestone 6 — Renewable Generation Aggregation**
 
 Milestone 0 remains unchanged: project structure, a minimal FastAPI application
 with API metadata, the health endpoint, and its test. Milestone 1 adds reusable
@@ -153,6 +158,8 @@ adds semantic review and reproducible Site 1 solar preparation. Milestone 5C
 adds three training-only solar estimation baselines and chronological evaluation.
 Milestone 5D compares one fixed HistGradientBoosting configuration and one fixed
 ExtraTrees configuration, preserving the 5B data/features/splits and 5C baseline.
+Milestone 6 adds a small aggregation service for already-produced wind and solar
+MW estimates, with explicit complete, partial and unavailable results.
 
 Reproduce from the project root with existing dependencies and libarchive-compatible
 `tar` on PATH:
@@ -454,6 +461,19 @@ Two candidate models and three small JSON artifacts remain Git-ignored under
 Reruns verify input, code and output hashes and reuse the completed evaluation;
 an interrupted final evaluation fails clearly rather than silently repeating it.
 No prediction CSV or plots are generated for 5D.
+
+## Renewable Generation Aggregation
+
+`ml.services.renewable_aggregator.aggregate_renewable_power` accepts a timestamp
+and aligned `wind_power_mw` / `solar_power_mw` estimates. Both available values
+produce a complete total; missing values remain `None` and make the total
+unavailable. Renewable mix percentages are returned only for positive complete
+totals. Negative, non-finite and nonnumeric estimates are rejected without clipping.
+
+See [the aggregation contract and example](docs/renewable_aggregation.md).
+An optional JSON-only helper reads model labels. No model loading, training,
+preprocessing, dataset alignment, API integration or grid decisions are performed.
+Callers must establish compatible time, units and portfolio scope before aggregation.
 
 ## API Documentation
 
