@@ -20,6 +20,12 @@ venv/
 *.pkl
 ml/data/raw/*
 !ml/data/raw/.gitkeep
+!ml/data/raw/wind/
+ml/data/raw/wind/*
+!ml/data/raw/wind/.gitkeep
+!ml/data/raw/solar/
+ml/data/raw/solar/*
+!ml/data/raw/solar/.gitkeep
 ml/data/processed/*
 !ml/data/processed/.gitkeep
 
@@ -32,3 +38,11 @@ node_modules/
 dist/
 build/
 *.egg-info/
+
+# Original downloads retained in the repository root
+/Wind farm site 1 (Nominal capacity-99MW).xlsx
+/Solar station site 1 (Nominal capacity-50MW).xlsx
+/data_original.rar
+/data_processed.rar
+/WF_correlation.png
+/SS_correlation.png

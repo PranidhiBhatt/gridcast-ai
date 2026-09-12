@@ -1,0 +1,42 @@
+{
+  "discovery_root": "C:\\Users\\prani\\Documents\\ChatGPT\\Hackout2026\\gridcast-ai",
+  "sources": [
+    {
+      "relative_path": "data_original.rar",
+      "size_bytes": 77966660,
+      "sha256": "8b6c22ed7731ba9bc8f0961ad3bd13ad28a707692930c5fa4845f30695c1f4ea"
+    },
+    {
+      "relative_path": "data_processed.rar",
+      "size_bytes": 74468298,
+      "sha256": "b16f2238a3fab5ec4e327afcb0574479dd31117c77738387807790414ef3e0f4"
+    },
+    {
+      "relative_path": "Solar station site 1 (Nominal capacity-50MW).xlsx",
+      "size_bytes": 3738807,
+      "sha256": "09714eb3f3a1cde6ddb69d459f7a02dde8d3c21f37455deb3546924b51b128ee"
+    },
+    {
+      "relative_path": "SS_correlation.png",
+      "size_bytes": 191180,
+      "sha256": "7d6f1453b7c92d418e5075d9f45e768a5e225bbdcb807456ea68c8b6993eb3b5"
+    },
+    {
+      "relative_path": "WF_correlation.png",
+      "size_bytes": 346621,
+      "sha256": "e0786b06a09d855b79faec782138d92043fb56f5b6bafb1a7903cf6f9af40d7c"
+    },
+    {
+      "relative_path": "Wind farm site 1 (Nominal capacity-99MW).xlsx",
+      "size_bytes": 8299552,
+      "sha256": "c7b6c86e80fa1f36c7547bcbb17205dc063c554981f07620fa3a2e7ec463fddc"
+    }
+  ],
+  "selected_copies": [
+    {
+      "source": "Wind farm site 1 (Nominal capacity-99MW).xlsx",
+      "destination": "ml/data/raw/wind/Wind farm site 1 (Nominal capacity-99MW).xlsx",
+      "reason": "Single-site original weather and power inspection; other wind archive members read in memory."
+    }
+  ]
+}
