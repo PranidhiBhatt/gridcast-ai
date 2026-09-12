@@ -9,10 +9,10 @@ information can support renewable energy planning. The long-term goal is to
 forecast solar and wind generation, compare supply with demand, identify grid
 imbalances, and recommend actions with economic and environmental context.
 
-The project foundation, dataset inspection, Site 1 wind preparation and baseline
-weather-to-wind-power estimation are implemented. These models estimate power at
-the same timestamp as their weather inputs. True future forecasting and grid
-intelligence remain planned.
+The project foundation, dataset inspection, Site 1 wind preparation, baseline
+estimation and advanced wind model comparison are implemented. These models
+estimate power at the same timestamp as their weather inputs. True future
+forecasting and grid intelligence remain planned.
 
 ## Problem Statement
 
@@ -42,21 +42,23 @@ recommendations, and economic and environmental impact analysis.
 - PostgreSQL persistence and a React interface.
 
 Live ingestion and forecasting remain planned. Offline Site 1 cleaning, feature
-engineering and same-timestamp wind power estimation are implemented.
+engineering, same-timestamp wind power estimation and controlled model comparison
+are implemented.
 
 ## Technology Stack
 
 | Area | Technology | Status |
 | --- | --- | --- |
 | Backend | Python 3.10+, FastAPI, Uvicorn | Implemented minimal API |
-| Testing | pytest, HTTPX, FastAPI TestClient | Health, data preparation and baseline estimation tests |
+| Testing | pytest, HTTPX, FastAPI TestClient | Health, data preparation and model comparison tests |
 | Data preparation | Pandas, NumPy, openpyxl | Inspection, cleaning and feature engineering |
-| Baseline estimation | scikit-learn, joblib | Mean, linear regression and random forest baselines |
+| Wind estimation | scikit-learn, joblib, threadpoolctl | Baselines plus HistGradientBoosting and GradientBoosting comparison |
 | Database | PostgreSQL | Planned |
 | Frontend | React | Planned |
 
-Backend, test, data preparation and baseline estimation dependencies are included
-in `requirements.txt`. No advanced ML frameworks are installed.
+Backend, test, data preparation and model comparison dependencies are included in
+`requirements.txt`. No deep-learning or unrelated forecasting frameworks are
+installed.
 
 ## Project Structure
 
@@ -78,24 +80,28 @@ gridcast-ai/
 │   │   └── run_wind_preprocessing.py
 │   ├── models/
 │   │   ├── __init__.py
-│   │   └── wind_baseline.py
+│   │   ├── wind_baseline.py
+│   │   └── wind_advanced.py
 │   ├── training/
 │   │   ├── __init__.py
-│   │   └── train_wind_baseline.py
+│   │   ├── train_wind_baseline.py
+│   │   └── train_wind_advanced.py
 │   └── artifacts/              # Ignored generated models, predictions and metrics
 ├── tests/
 │   ├── __init__.py
 │   ├── test_health.py
 │   ├── test_data_inspector.py
 │   ├── test_wind_preprocessor.py
-│   └── test_wind_baseline.py
+│   ├── test_wind_baseline.py
+│   └── test_wind_advanced.py
 ├── docs/
 │   ├── .gitkeep
 │   ├── dataset_sources.json
 │   ├── wind_dataset_analysis.md
 │   ├── wind_feature_manifest.json
 │   ├── wind_preprocessing_report.md
-│   └── wind_baseline_model_report.md
+│   ├── wind_baseline_model_report.md
+│   └── wind_advanced_model_report.md
 ├── .gitignore
 ├── .env.example
 ├── README.md
@@ -109,7 +115,7 @@ serialized `.joblib`/`.pkl` models are excluded from Git.
 
 ## Current Development Status
 
-**Milestone 3 — Baseline Wind Power Estimation**
+**Milestone 4 — Advanced Wind Power Model Comparison**
 
 Milestone 0 remains unchanged: project structure, a minimal FastAPI application
 with API metadata, the health endpoint, and its test. Milestone 1 adds reusable
@@ -118,6 +124,9 @@ Milestone 2 adds in-memory cleaning, audited row omission, deterministic calenda
 and direction features, a chronological split plan and a separate prepared CSV.
 Milestone 3 adds three fixed same-timestamp estimation baselines, chronological
 evaluation, validation-based model selection and reproducible local artifacts.
+Milestone 4 compares fixed HistGradientBoosting and GradientBoosting configurations
+with two feature sets, validation-only selection, residual/error analysis and a
+single held-out test evaluation for the selected model.
 
 No true future forecasting, solar/demand models, grid decision engine, economic
 or environmental calculations, database integration, frontend, or Docker setup
@@ -284,6 +293,36 @@ The linear model artifact includes its training-fitted scaler. The runner record
 input/code hashes, library versions and fixed settings without volatile timestamps.
 It preserves the input datasets and preprocessing code. Reproducibility is assessed
 within the same software environment; other versions can differ numerically.
+
+## Reproduce Advanced Wind Model Comparison
+
+From the project root with dependencies installed:
+
+```sh
+python -m ml.training.train_wind_advanced
+```
+
+This milestone keeps the same **Weather-to-Wind-Power Estimation** task and
+chronological 2019 / January–June 2020 / July–December 2020 split. It compares
+four fixed configurations each for two feature experiments: set A uses the 19
+weather and safe calendar fields from the manifest, while set B uses all 25
+available predictors including engineered direction encodings. No random
+cross-validation or hyperparameter search is used. The selected configuration is
+chosen by validation MAE, with documented tie-breakers, before the held-out test
+metrics are read.
+
+The validation winner is `B_hist_150`, a
+`HistGradientBoostingRegressor` using all 25 predictors. Its held-out test metrics
+are MAE 6.7198 MW, RMSE 11.8563 MW and R² 0.7878. Relative to the Milestone 3
+random-forest baseline, RMSE improves by 1.72% and R² improves by 0.0075, while
+MAE is 0.0023 MW higher (0.03% worse). The test period is kept out of advanced
+model fitting, while its baseline result was already reported in Milestone 3.
+
+Read [the advanced model report](docs/wind_advanced_model_report.md) for the
+complete experiment ledger, residual and time-based errors, power-range errors,
+validation permutation importance and final model metadata. Generated models,
+metrics, predictions and analysis JSON files under `ml/artifacts/` are ignored by
+Git.
 
 ## API Documentation
 
