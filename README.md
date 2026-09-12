@@ -98,7 +98,8 @@ gridcast-ai/
 │   ├── services/
 │   │   ├── __init__.py
 │   │   ├── renewable_aggregator.py
-│   │   └── grid_intelligence.py
+│   │   ├── grid_intelligence.py
+│   │   └── impact_engine.py
 │   └── artifacts/              # Ignored generated models, predictions and metrics
 ├── tests/
 │   ├── __init__.py
@@ -112,7 +113,8 @@ gridcast-ai/
 │   ├── test_solar_baseline.py
 │   ├── test_solar_advanced.py
 │   ├── test_renewable_aggregator.py
-│   └── test_grid_intelligence.py
+│   ├── test_grid_intelligence.py
+│   └── test_impact_engine.py
 ├── docs/
 │   ├── .gitkeep
 │   ├── dataset_sources.json
@@ -128,7 +130,8 @@ gridcast-ai/
 │   ├── solar_baseline_model_report.md
 │   ├── solar_advanced_model_report.md
 │   ├── renewable_aggregation.md
-│   └── grid_intelligence.md
+│   ├── grid_intelligence.md
+│   └── impact_engine.md
 ├── .gitignore
 ├── .env.example
 ├── README.md
@@ -142,7 +145,7 @@ serialized `.joblib`/`.pkl` models are excluded from Git.
 
 ## Current Development Status
 
-**Milestone 7 — Rule-based Grid Intelligence**
+**Milestone 8 — Economic and Environmental Impact Estimation**
 
 Milestone 0 remains unchanged: project structure, a minimal FastAPI application
 with API metadata, the health endpoint, and its test. Milestone 1 adds reusable
@@ -165,6 +168,8 @@ Milestone 6 adds a small aggregation service for already-produced wind and solar
 MW estimates, with explicit complete, partial and unavailable results.
 Milestone 7 compares complete renewable supply with reported demand, using a
 configurable symmetric balance tolerance and deterministic decision-support advice.
+Milestone 8 adds explicit-duration, assumption-driven avoided generation cost and
+emissions scenarios, with demand coverage and potential surplus context.
 
 Reproduce from the project root with existing dependencies and libarchive-compatible
 `tar` on PATH:
@@ -209,8 +214,8 @@ and installed capacity remain unresolved. The independently checked solar splits
 are 2019 training (34,987 rows), January–June 2020 validation (17,472), and
 July–December 2020 testing (17,657); no random shuffle or test-based tuning.
 
-No true future forecasting, demand models, autonomous dispatch, economic
-or environmental calculations, database integration, frontend, or Docker setup
+No true future forecasting, demand models, autonomous dispatch, live market
+integration, database integration, frontend, or Docker setup
 are included.
 
 ## Setup Instructions
@@ -492,6 +497,19 @@ See [the rules, input contract and example](docs/grid_intelligence.md).
 Recommendations are fixed conditional options for operator review. This component
 does not execute dispatch, establish total-grid adequacy or guarantee safety.
 No API integration, model training or economic/environmental calculations are added.
+
+## Economic and Environmental Impact Estimation
+
+`ml.services.impact_engine.estimate_impact` requires renewable MW and explicit
+`interval_hours` to calculate MWh. `estimate_grid_impact` accepts the Milestone 7
+result and preserves unavailable supply. Configurable illustrative defaults are
+500 kg CO₂/MWh and 50 generic currency units/MWh, echoed in each result.
+
+Read [the impact formulas, assumptions and example](docs/impact_engine.md).
+The scenario assumes all estimated energy displaces conventional generation;
+actual use and displacement are unverified, including for surplus. These outputs
+are not measured savings, verified emissions reductions or carbon accounts.
+No live prices, external services or grid control are introduced.
 
 ## API Documentation
 
