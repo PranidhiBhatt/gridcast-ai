@@ -1,0 +1,1605 @@
+{
+  "milestone": "5B",
+  "policy_version": "solar-site-1-v1",
+  "task": "WEATHER-TO-SOLAR-POWER ESTIMATION",
+  "source": "Solar station site 1 (Nominal capacity-50MW).xlsx",
+  "sheet": "sheet1",
+  "source_manifest": "docs/solar_dataset_sources.json",
+  "raw_sha256": "09714eb3f3a1cde6ddb69d459f7a02dde8d3c21f37455deb3546924b51b128ee",
+  "timestamp_column": "Time(year-month-day h:m:s)",
+  "target_column": "Power (MW)",
+  "original_features": [
+    "Total solar irradiance (W/m2)",
+    "Direct normal irradiance (W/m2)",
+    "Global horizontal irradiance (W/m2)",
+    "Air temperature  (°C) ",
+    "Atmosphere (hpa)"
+  ],
+  "engineered_features": [
+    "hour",
+    "day_of_week",
+    "month",
+    "day_of_year",
+    "quarter",
+    "hour_sin",
+    "hour_cos",
+    "annual_sin",
+    "annual_cos"
+  ],
+  "features": [
+    "Total solar irradiance (W/m2)",
+    "Direct normal irradiance (W/m2)",
+    "Global horizontal irradiance (W/m2)",
+    "Air temperature  (°C) ",
+    "Atmosphere (hpa)",
+    "hour",
+    "day_of_week",
+    "month",
+    "day_of_year",
+    "quarter",
+    "hour_sin",
+    "hour_cos",
+    "annual_sin",
+    "annual_cos"
+  ],
+  "excluded_features": {
+    "Relative humidity (%)": "Exclude the entire humidity column from initial predictors. Do not rescale/clip or omit rows solely for humidity; preserve raw values. This semantic decision is not selected using model/test performance.",
+    "Time(year-month-day h:m:s)": "split/index key only; use approved calendar encodings as predictors",
+    "Power (MW)": "target only; never a predictor or source of engineered features"
+  },
+  "semantic_decisions": {
+    "minus99": {
+      "confidence": "LIKELY",
+      "evidence": "All six weather columns have identical -99 rows; negative irradiance/pressure/relative humidity contradict header-supported ranges. No codebook defines the code.",
+      "policy": "Convert exactly -99 in the six explicitly named weather columns to missing in memory, including temperature based on synchronized evidence. Never blanket-replace negatives or power values."
+    },
+    "humidity": {
+      "confidence": "UNRESOLVED",
+      "evidence": "Non-sentinel out-of-range values form a narrow high-valued cluster. The percent header does not explain its encoding. Metadata contains no scaling/offset specification.",
+      "policy": "Exclude the entire humidity column from initial predictors. Do not rescale/clip or omit rows solely for humidity; preserve raw values. This semantic decision is not selected using model/test performance."
+    },
+    "power": {
+      "confidence": "VERIFIED header; UNRESOLVED metering",
+      "evidence": "Power (MW) explicitly labels power, not energy; AC/DC and instantaneous versus interval-average conventions are absent.",
+      "policy": "Preserve finite nonnegative targets, all zeros and statistical extremes. No capacity clipping, scaling or energy conversion. Missing/non-finite targets are unavailable and cause auditable omission. New negative targets fail for semantic review rather than silent correction."
+    },
+    "irradiance": {
+      "confidence": "VERIFIED header units; UNRESOLVED geometry/calibration",
+      "evidence": "Three separate headers name Total, Direct normal and Global horizontal irradiance in W/m2; total measurement plane is not specified.",
+      "policy": "Retain all three as separately labelled contemporaneous measurements, conditional on unknown calibration/geometry. No plane conversion, relabelling, upper clipping, cross-sensor formula or nighttime correction. New non-sentinel negative irradiance fails for review."
+    },
+    "temperature": {
+      "confidence": "VERIFIED header; LIKELY sentinel",
+      "evidence": "Air temperature is labelled degrees Celsius. The -99 rows coincide with all other weather codes.",
+      "policy": "Replace exactly the documented likely sentinel. Preserve other finite temperatures, including negatives; no unsupported range correction."
+    },
+    "pressure": {
+      "confidence": "LIKELY",
+      "evidence": "Atmosphere (hpa) suggests atmospheric pressure; non-sentinel measurements form a narrow plausible range. No sensor or altitude metadata verifies the interpretation.",
+      "policy": "Retain the original header/values after sentinel handling. No unit conversion or altitude adjustment. Newly encountered nonpositive values fail for review; none occur outside -99 in the inspected source."
+    },
+    "timezone": {
+      "confidence": "UNRESOLVED",
+      "evidence": "Recorded timestamps are naive. Workbook document creation/modification UTC stamps describe the document, not observation timezone.",
+      "policy": "Keep the recorded clock. Do not localize, convert, calculate astronomy or label physical solar time."
+    },
+    "capacity": {
+      "confidence": "VERIFIED filename label; UNRESOLVED installed capacity",
+      "evidence": "Filename states Nominal capacity-50MW only.",
+      "policy": "Document the label without treating it as independently verified installed capacity. Never use it to clip, normalize or reject observations."
+    }
+  },
+  "feature_review": {
+    "Total solar irradiance (W/m2)": {
+      "source_column": "Total solar irradiance (W/m2)",
+      "category": "irradiance",
+      "unit_from_header": "W/m2",
+      "semantic_confidence": "VERIFIED header units; UNRESOLVED geometry/calibration",
+      "included": true,
+      "missing_policy": "-99/non-finite to missing; omit only incomplete required rows",
+      "availability_at_T": "co-recorded observation at T; delivery latency unverified",
+      "estimation_suitability": "conditional contemporaneous empirical predictor; preserve label and uncertainties",
+      "future_availability": "NOT VERIFIED; future forecasting requires as-issued/available inputs and an explicit origin/horizon"
+    },
+    "Direct normal irradiance (W/m2)": {
+      "source_column": "Direct normal irradiance (W/m2)",
+      "category": "irradiance",
+      "unit_from_header": "W/m2",
+      "semantic_confidence": "VERIFIED header units; UNRESOLVED geometry/calibration",
+      "included": true,
+      "missing_policy": "-99/non-finite to missing; omit only incomplete required rows",
+      "availability_at_T": "co-recorded observation at T; delivery latency unverified",
+      "estimation_suitability": "conditional contemporaneous empirical predictor; preserve label and uncertainties",
+      "future_availability": "NOT VERIFIED; future forecasting requires as-issued/available inputs and an explicit origin/horizon"
+    },
+    "Global horizontal irradiance (W/m2)": {
+      "source_column": "Global horizontal irradiance (W/m2)",
+      "category": "irradiance",
+      "unit_from_header": "W/m2",
+      "semantic_confidence": "VERIFIED header units; UNRESOLVED geometry/calibration",
+      "included": true,
+      "missing_policy": "-99/non-finite to missing; omit only incomplete required rows",
+      "availability_at_T": "co-recorded observation at T; delivery latency unverified",
+      "estimation_suitability": "conditional contemporaneous empirical predictor; preserve label and uncertainties",
+      "future_availability": "NOT VERIFIED; future forecasting requires as-issued/available inputs and an explicit origin/horizon"
+    },
+    "Air temperature  (°C) ": {
+      "source_column": "Air temperature  (°C) ",
+      "category": "temperature",
+      "unit_from_header": "°C",
+      "semantic_confidence": "VERIFIED header; LIKELY sentinel",
+      "included": true,
+      "missing_policy": "-99/non-finite to missing; omit only incomplete required rows",
+      "availability_at_T": "co-recorded observation at T; delivery latency unverified",
+      "estimation_suitability": "conditional contemporaneous empirical predictor; preserve label and uncertainties",
+      "future_availability": "NOT VERIFIED; future forecasting requires as-issued/available inputs and an explicit origin/horizon"
+    },
+    "Atmosphere (hpa)": {
+      "source_column": "Atmosphere (hpa)",
+      "category": "pressure",
+      "unit_from_header": "hpa",
+      "semantic_confidence": "LIKELY",
+      "included": true,
+      "missing_policy": "-99/non-finite to missing; omit only incomplete required rows",
+      "availability_at_T": "co-recorded observation at T; delivery latency unverified",
+      "estimation_suitability": "conditional contemporaneous empirical predictor; preserve label and uncertainties",
+      "future_availability": "NOT VERIFIED; future forecasting requires as-issued/available inputs and an explicit origin/horizon"
+    },
+    "Relative humidity (%)": {
+      "source_column": "Relative humidity (%)",
+      "category": "humidity",
+      "unit_from_header": "%",
+      "semantic_confidence": "UNRESOLVED",
+      "included": false,
+      "missing_policy": "excluded column; never determines omission",
+      "availability_at_T": "co-recorded observation at T; delivery latency unverified",
+      "estimation_suitability": "excluded pending semantic verification",
+      "future_availability": "NOT VERIFIED; future forecasting requires as-issued/available inputs and an explicit origin/horizon"
+    },
+    "hour": {
+      "source_column": "Time(year-month-day h:m:s)",
+      "category": "calendar",
+      "unit_from_header": null,
+      "semantic_confidence": "VERIFIED recorded-calendar arithmetic; timezone UNRESOLVED",
+      "included": true,
+      "missing_policy": "invalid timestamp fails before feature generation",
+      "availability_at_T": "known from supplied timestamp T",
+      "estimation_suitability": "approved",
+      "future_availability": "calendar known if target timestamp and source clock convention are defined"
+    },
+    "day_of_week": {
+      "source_column": "Time(year-month-day h:m:s)",
+      "category": "calendar",
+      "unit_from_header": null,
+      "semantic_confidence": "VERIFIED recorded-calendar arithmetic; timezone UNRESOLVED",
+      "included": true,
+      "missing_policy": "invalid timestamp fails before feature generation",
+      "availability_at_T": "known from supplied timestamp T",
+      "estimation_suitability": "approved",
+      "future_availability": "calendar known if target timestamp and source clock convention are defined"
+    },
+    "month": {
+      "source_column": "Time(year-month-day h:m:s)",
+      "category": "calendar",
+      "unit_from_header": null,
+      "semantic_confidence": "VERIFIED recorded-calendar arithmetic; timezone UNRESOLVED",
+      "included": true,
+      "missing_policy": "invalid timestamp fails before feature generation",
+      "availability_at_T": "known from supplied timestamp T",
+      "estimation_suitability": "approved",
+      "future_availability": "calendar known if target timestamp and source clock convention are defined"
+    },
+    "day_of_year": {
+      "source_column": "Time(year-month-day h:m:s)",
+      "category": "calendar",
+      "unit_from_header": null,
+      "semantic_confidence": "VERIFIED recorded-calendar arithmetic; timezone UNRESOLVED",
+      "included": true,
+      "missing_policy": "invalid timestamp fails before feature generation",
+      "availability_at_T": "known from supplied timestamp T",
+      "estimation_suitability": "approved",
+      "future_availability": "calendar known if target timestamp and source clock convention are defined"
+    },
+    "quarter": {
+      "source_column": "Time(year-month-day h:m:s)",
+      "category": "calendar",
+      "unit_from_header": null,
+      "semantic_confidence": "VERIFIED recorded-calendar arithmetic; timezone UNRESOLVED",
+      "included": true,
+      "missing_policy": "invalid timestamp fails before feature generation",
+      "availability_at_T": "known from supplied timestamp T",
+      "estimation_suitability": "approved",
+      "future_availability": "calendar known if target timestamp and source clock convention are defined"
+    },
+    "hour_sin": {
+      "source_column": "Time(year-month-day h:m:s)",
+      "category": "calendar",
+      "unit_from_header": null,
+      "semantic_confidence": "VERIFIED recorded-calendar arithmetic; timezone UNRESOLVED",
+      "included": true,
+      "missing_policy": "invalid timestamp fails before feature generation",
+      "availability_at_T": "known from supplied timestamp T",
+      "estimation_suitability": "approved",
+      "future_availability": "calendar known if target timestamp and source clock convention are defined"
+    },
+    "hour_cos": {
+      "source_column": "Time(year-month-day h:m:s)",
+      "category": "calendar",
+      "unit_from_header": null,
+      "semantic_confidence": "VERIFIED recorded-calendar arithmetic; timezone UNRESOLVED",
+      "included": true,
+      "missing_policy": "invalid timestamp fails before feature generation",
+      "availability_at_T": "known from supplied timestamp T",
+      "estimation_suitability": "approved",
+      "future_availability": "calendar known if target timestamp and source clock convention are defined"
+    },
+    "annual_sin": {
+      "source_column": "Time(year-month-day h:m:s)",
+      "category": "calendar",
+      "unit_from_header": null,
+      "semantic_confidence": "VERIFIED recorded-calendar arithmetic; timezone UNRESOLVED",
+      "included": true,
+      "missing_policy": "invalid timestamp fails before feature generation",
+      "availability_at_T": "known from supplied timestamp T",
+      "estimation_suitability": "approved",
+      "future_availability": "calendar known if target timestamp and source clock convention are defined"
+    },
+    "annual_cos": {
+      "source_column": "Time(year-month-day h:m:s)",
+      "category": "calendar",
+      "unit_from_header": null,
+      "semantic_confidence": "VERIFIED recorded-calendar arithmetic; timezone UNRESOLVED",
+      "included": true,
+      "missing_policy": "invalid timestamp fails before feature generation",
+      "availability_at_T": "known from supplied timestamp T",
+      "estimation_suitability": "approved",
+      "future_availability": "calendar known if target timestamp and source clock convention are defined"
+    }
+  },
+  "missing_value_policy": "Fixed complete-case omission for five original features and target only. No interpolation, forward/back fill, learned imputation or scaling. Humidity never drives omission.",
+  "split_policy": "Fixed chronological boundaries independently verified against retained solar rows: train 2019; validation Jan-Jun 2020; test Jul-Dec 2020. No shuffle, fitting, target tuning or test-based feature selection; future learned transforms must fit train only.",
+  "calendar_definitions": {
+    "hour": "integer 0-23",
+    "day_of_week": "Monday=0 through Sunday=6",
+    "month": "1-12",
+    "day_of_year": "1-365/366",
+    "quarter": "1-4",
+    "hour_sin/hour_cos": "sin/cos(2*pi*fraction_of_recorded_day), including minutes/seconds/subseconds",
+    "annual_sin/annual_cos": "sin/cos(2*pi*(day_of_year-1+fraction_of_day)/days_in_current_year); 366 for leap years, otherwise 365"
+  },
+  "context": {
+    "evidence_sources": [
+      "docs/solar_dataset_analysis.md",
+      "docs/solar_dataset_sources.json",
+      "Solar station site 1 (Nominal capacity-50MW).xlsx"
+    ],
+    "workbook_metadata": {
+      "docProps/core.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n<cp:coreProperties xmlns:cp=\"http://schemas.openxmlformats.org/package/2006/metadata/core-properties\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:dcmitype=\"http://purl.org/dc/dcmitype/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><dc:creator>jwl</dc:creator><cp:lastModifiedBy>Chen Yongbao</cp:lastModifiedBy><dcterms:created xsi:type=\"dcterms:W3CDTF\">2020-04-12T03:42:00Z</dcterms:created><dcterms:modified xsi:type=\"dcterms:W3CDTF\">2022-05-20T01:26:01Z</dcterms:modified></cp:coreProperties>",
+      "docProps/app.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n<Properties xmlns=\"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties\" xmlns:vt=\"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes\"><Application>Microsoft Excel</Application><DocSecurity>0</DocSecurity><ScaleCrop>false</ScaleCrop><HeadingPairs><vt:vector size=\"2\" baseType=\"variant\"><vt:variant><vt:lpstr>工作表</vt:lpstr></vt:variant><vt:variant><vt:i4>1</vt:i4></vt:variant></vt:vector></HeadingPairs><TitlesOfParts><vt:vector size=\"1\" baseType=\"lpstr\"><vt:lpstr>sheet1</vt:lpstr></vt:vector></TitlesOfParts><LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc><HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0300</AppVersion></Properties>",
+      "docProps/custom.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n<Properties xmlns=\"http://schemas.openxmlformats.org/officeDocument/2006/custom-properties\" xmlns:vt=\"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes\"><property fmtid=\"{D5CDD505-2E9C-101B-9397-08002B2CF9AE}\" pid=\"2\" name=\"KSOProductBuildVer\"><vt:lpwstr>2052-10.1.0.7224</vt:lpwstr></property></Properties>"
+    },
+    "local_document_review": "Repository root, existing docs, and both archive member listings reviewed: archives contain solar/wind workbooks and folders only; no supplied codebook or observation timezone documentation found. Document creation UTC stamps are not measurement timezone evidence.",
+    "external_sources": "None; no internet used"
+  },
+  "diagnostics": {
+    "raw_numeric": {
+      "Total solar irradiance (W/m2)": {
+        "min": -99.0,
+        "max": 1359.0,
+        "mean": 266.0510003419973,
+        "median": 5.0,
+        "missing": 0,
+        "non_finite_non_null": 0,
+        "negative": 60,
+        "zero": 34204,
+        "iqr_outliers": 1
+      },
+      "Direct normal irradiance (W/m2)": {
+        "min": -99.0,
+        "max": 980.0,
+        "mean": 93.16146545827634,
+        "median": 1.0,
+        "missing": 0,
+        "non_finite_non_null": 0,
+        "negative": 60,
+        "zero": 26706,
+        "iqr_outliers": 14776
+      },
+      "Global horizontal irradiance (W/m2)": {
+        "min": -99.0,
+        "max": 989.0,
+        "mean": 67.55383606931144,
+        "median": 4.0,
+        "missing": 0,
+        "non_finite_non_null": 0,
+        "negative": 60,
+        "zero": 34245,
+        "iqr_outliers": 4835
+      },
+      "Air temperature  (°C) ": {
+        "min": -99.0,
+        "max": 41.2,
+        "mean": 13.042668433652532,
+        "median": 15.0,
+        "missing": 0,
+        "non_finite_non_null": 0,
+        "negative": 17490,
+        "zero": 228,
+        "iqr_outliers": 60
+      },
+      "Atmosphere (hpa)": {
+        "min": -99.0,
+        "max": 936.3,
+        "mean": 912.5075837893296,
+        "median": 913.3,
+        "missing": 0,
+        "non_finite_non_null": 0,
+        "negative": 60,
+        "zero": 0,
+        "iqr_outliers": 60
+      },
+      "Relative humidity (%)": {
+        "min": -99.0,
+        "max": 6553.5,
+        "mean": 650.6998247264022,
+        "median": 21.0,
+        "missing": 0,
+        "non_finite_non_null": 0,
+        "negative": 60,
+        "zero": 370,
+        "iqr_outliers": 6807
+      },
+      "Power (MW)": {
+        "min": 0.0,
+        "max": 48.32173,
+        "mean": 9.669416544730392,
+        "median": 0.0,
+        "missing": 0,
+        "non_finite_non_null": 0,
+        "negative": 0,
+        "zero": 35264,
+        "iqr_outliers": 44
+      }
+    },
+    "numeric_without_weather_minus99": {
+      "Total solar irradiance (W/m2)": {
+        "min": 0.0,
+        "max": 1359.0,
+        "mean": 266.3633835358549,
+        "median": 5.0,
+        "missing": 60,
+        "non_finite_non_null": 0,
+        "negative": 0,
+        "zero": 34204,
+        "iqr_outliers": 1
+      },
+      "Direct normal irradiance (W/m2)": {
+        "min": 0.0,
+        "max": 980.0,
+        "mean": 93.32590278966285,
+        "median": 1.0,
+        "missing": 60,
+        "non_finite_non_null": 0,
+        "negative": 0,
+        "zero": 26706,
+        "iqr_outliers": 14716
+      },
+      "Global horizontal irradiance (W/m2)": {
+        "min": 0.0,
+        "max": 989.0,
+        "mean": 67.69636031718866,
+        "median": 4.0,
+        "missing": 60,
+        "non_finite_non_null": 0,
+        "negative": 0,
+        "zero": 34245,
+        "iqr_outliers": 4835
+      },
+      "Air temperature  (°C) ": {
+        "min": -18.2,
+        "max": 41.2,
+        "mean": 13.13854612356666,
+        "median": 15.0,
+        "missing": 60,
+        "non_finite_non_null": 0,
+        "negative": 17430,
+        "zero": 228,
+        "iqr_outliers": 0
+      },
+      "Atmosphere (hpa)": {
+        "min": 894.0,
+        "max": 936.3,
+        "mean": 913.3731559130584,
+        "median": 913.3,
+        "missing": 60,
+        "non_finite_non_null": 0,
+        "negative": 0,
+        "zero": 0,
+        "iqr_outliers": 0
+      },
+      "Relative humidity (%)": {
+        "min": 0.0,
+        "max": 6553.5,
+        "mean": 651.3413614581551,
+        "median": 21.0,
+        "missing": 60,
+        "non_finite_non_null": 0,
+        "negative": 0,
+        "zero": 370,
+        "iqr_outliers": 6747
+      }
+    },
+    "sentinels": {
+      "counts": {
+        "Total solar irradiance (W/m2)": 60,
+        "Direct normal irradiance (W/m2)": 60,
+        "Global horizontal irradiance (W/m2)": 60,
+        "Air temperature  (°C) ": 60,
+        "Atmosphere (hpa)": 60,
+        "Relative humidity (%)": 60
+      },
+      "all_six_coincident_rows": 60,
+      "any_weather_sentinel_rows": 60
+    },
+    "humidity": {
+      "outside_0_100": 6807,
+      "minus99": 60,
+      "negative_other": 0,
+      "above100": 6747,
+      "high_quantiles": {
+        "0.0": 6546.5,
+        "0.25": 6549.5,
+        "0.5": 6551.2,
+        "0.75": 6552.55,
+        "1.0": 6553.5
+      },
+      "most_common_high_values": {
+        "6546.5": 301,
+        "6553.5": 212,
+        "6553.4": 211,
+        "6553.3": 206,
+        "6553.2": 185,
+        "6553.0": 182,
+        "6552.7": 156,
+        "6552.9": 149,
+        "6551.0": 144,
+        "6552.3": 140
+      },
+      "bad_by_month": {
+        "2019-01": 0,
+        "2019-02": 0,
+        "2019-03": 421,
+        "2019-04": 161,
+        "2019-05": 572,
+        "2019-06": 150,
+        "2019-07": 219,
+        "2019-08": 352,
+        "2019-09": 197,
+        "2019-10": 0,
+        "2019-11": 8,
+        "2019-12": 0,
+        "2020-01": 0,
+        "2020-02": 0,
+        "2020-03": 46,
+        "2020-04": 1408,
+        "2020-05": 670,
+        "2020-06": 650,
+        "2020-07": 514,
+        "2020-08": 575,
+        "2020-09": 631,
+        "2020-10": 232,
+        "2020-11": 0,
+        "2020-12": 1
+      },
+      "bad_with_other_weather_sentinel": 60,
+      "weather_pearson_without_minus99": {
+        "Total solar irradiance (W/m2)": 0.18907371131822578,
+        "Direct normal irradiance (W/m2)": 0.09433410924298861,
+        "Global horizontal irradiance (W/m2)": 0.11426371905739091,
+        "Air temperature  (°C) ": 0.31570724587159193,
+        "Atmosphere (hpa)": -0.21609325157230852,
+        "Relative humidity (%)": 1.0
+      },
+      "interpretation": "Large high-value cluster suggests an encoding/sensor problem, but neither scaling nor offset correction is verified. Correlations are descriptive, not evidence of a correction formula."
+    },
+    "positive_power_zero_ghi": {
+      "classification": "UNRESOLVED; retain",
+      "rows": 56,
+      "numeric": {
+        "Total solar irradiance (W/m2)": {
+          "min": 0.0,
+          "max": 3.0,
+          "mean": 0.5714285714285714,
+          "median": 0.0,
+          "missing": 0,
+          "non_finite_non_null": 0,
+          "negative": 0,
+          "zero": 36,
+          "iqr_outliers": 3
+        },
+        "Direct normal irradiance (W/m2)": {
+          "min": 0.0,
+          "max": 3.0,
+          "mean": 0.9464285714285714,
+          "median": 1.0,
+          "missing": 0,
+          "non_finite_non_null": 0,
+          "negative": 0,
+          "zero": 10,
+          "iqr_outliers": 16
+        },
+        "Global horizontal irradiance (W/m2)": {
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0,
+          "median": 0.0,
+          "missing": 0,
+          "non_finite_non_null": 0,
+          "negative": 0,
+          "zero": 56,
+          "iqr_outliers": 0
+        },
+        "Air temperature  (°C) ": {
+          "min": -6.8,
+          "max": 37.7,
+          "mean": 17.539285714285715,
+          "median": 19.35,
+          "missing": 0,
+          "non_finite_non_null": 0,
+          "negative": 9,
+          "zero": 1,
+          "iqr_outliers": 0
+        },
+        "Atmosphere (hpa)": {
+          "min": 895.5,
+          "max": 924.0,
+          "mean": 910.6071428571429,
+          "median": 911.8499999999999,
+          "missing": 0,
+          "non_finite_non_null": 0,
+          "negative": 0,
+          "zero": 0,
+          "iqr_outliers": 0
+        },
+        "Relative humidity (%)": {
+          "min": 0.0,
+          "max": 6553.5,
+          "mean": 1300.5107142857144,
+          "median": 19.7,
+          "missing": 0,
+          "non_finite_non_null": 0,
+          "negative": 0,
+          "zero": 1,
+          "iqr_outliers": 11
+        },
+        "Power (MW)": {
+          "min": 0.001333,
+          "max": 0.068067,
+          "mean": 0.02058207142857143,
+          "median": 0.0187,
+          "missing": 0,
+          "non_finite_non_null": 0,
+          "negative": 0,
+          "zero": 0,
+          "iqr_outliers": 2
+        }
+      },
+      "by_hour": {
+        "7": 6,
+        "8": 1,
+        "18": 16,
+        "19": 11,
+        "20": 15,
+        "21": 7
+      },
+      "with_weather_sentinel": 0,
+      "with_invalid_humidity": 11,
+      "interpretation": "Rounding, timing alignment or low-light response are possibilities, not verified causes. No deletion or nighttime correction."
+    }
+  },
+  "audit": {
+    "schema": {
+      "rows": 70176,
+      "columns": 8,
+      "schema": [
+        {
+          "column": "Time(year-month-day h:m:s)",
+          "dtype": "object",
+          "missing": 0
+        },
+        {
+          "column": "Total solar irradiance (W/m2)",
+          "dtype": "int64",
+          "missing": 0
+        },
+        {
+          "column": "Direct normal irradiance (W/m2)",
+          "dtype": "int64",
+          "missing": 0
+        },
+        {
+          "column": "Global horizontal irradiance (W/m2)",
+          "dtype": "int64",
+          "missing": 0
+        },
+        {
+          "column": "Air temperature  (°C) ",
+          "dtype": "float64",
+          "missing": 0
+        },
+        {
+          "column": "Atmosphere (hpa)",
+          "dtype": "float64",
+          "missing": 0
+        },
+        {
+          "column": "Relative humidity (%)",
+          "dtype": "float64",
+          "missing": 0
+        },
+        {
+          "column": "Power (MW)",
+          "dtype": "float64",
+          "missing": 0
+        }
+      ],
+      "start": "2019-01-01 00:00:00",
+      "end": "2020-12-31 23:45:00",
+      "timezone": "UNRESOLVED; naive recorded clock",
+      "regular_15_minutes": true
+    },
+    "input_rows": 70176,
+    "omitted_rows": 60,
+    "output_rows": 70116,
+    "output_columns": 16,
+    "missing_before": {
+      "Time(year-month-day h:m:s)": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "Total solar irradiance (W/m2)": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "Direct normal irradiance (W/m2)": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "Global horizontal irradiance (W/m2)": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "Air temperature  (°C) ": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "Atmosphere (hpa)": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "Relative humidity (%)": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "Power (MW)": {
+        "count": 0,
+        "percent": 0.0
+      }
+    },
+    "missing_after_handling": {
+      "Time(year-month-day h:m:s)": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "Total solar irradiance (W/m2)": {
+        "count": 60,
+        "percent": 0.08549931600547195
+      },
+      "Direct normal irradiance (W/m2)": {
+        "count": 60,
+        "percent": 0.08549931600547195
+      },
+      "Global horizontal irradiance (W/m2)": {
+        "count": 60,
+        "percent": 0.08549931600547195
+      },
+      "Air temperature  (°C) ": {
+        "count": 60,
+        "percent": 0.08549931600547195
+      },
+      "Atmosphere (hpa)": {
+        "count": 60,
+        "percent": 0.08549931600547195
+      },
+      "Relative humidity (%)": {
+        "count": 60,
+        "percent": 0.08549931600547195
+      },
+      "Power (MW)": {
+        "count": 0,
+        "percent": 0.0
+      }
+    },
+    "missing_output": {
+      "Time(year-month-day h:m:s)": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "Total solar irradiance (W/m2)": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "Direct normal irradiance (W/m2)": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "Global horizontal irradiance (W/m2)": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "Air temperature  (°C) ": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "Atmosphere (hpa)": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "hour": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "day_of_week": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "month": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "day_of_year": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "quarter": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "hour_sin": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "hour_cos": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "annual_sin": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "annual_cos": {
+        "count": 0,
+        "percent": 0.0
+      },
+      "Power (MW)": {
+        "count": 0,
+        "percent": 0.0
+      }
+    },
+    "conversions": {
+      "Total solar irradiance (W/m2)": {
+        "minus99_to_missing": 60,
+        "nonfinite_to_missing": 0
+      },
+      "Direct normal irradiance (W/m2)": {
+        "minus99_to_missing": 60,
+        "nonfinite_to_missing": 0
+      },
+      "Global horizontal irradiance (W/m2)": {
+        "minus99_to_missing": 60,
+        "nonfinite_to_missing": 0
+      },
+      "Air temperature  (°C) ": {
+        "minus99_to_missing": 60,
+        "nonfinite_to_missing": 0
+      },
+      "Atmosphere (hpa)": {
+        "minus99_to_missing": 60,
+        "nonfinite_to_missing": 0
+      },
+      "Relative humidity (%)": {
+        "minus99_to_missing": 60,
+        "nonfinite_to_missing": 0
+      }
+    },
+    "zero_generation_before": {
+      "zero_count": 35264,
+      "by_hour": [
+        {
+          "group": "0",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 2924,
+          "zero_percent_of_non_null": 100.0
+        },
+        {
+          "group": "1",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 2924,
+          "zero_percent_of_non_null": 100.0
+        },
+        {
+          "group": "2",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 2924,
+          "zero_percent_of_non_null": 100.0
+        },
+        {
+          "group": "3",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 2924,
+          "zero_percent_of_non_null": 100.0
+        },
+        {
+          "group": "4",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 2924,
+          "zero_percent_of_non_null": 100.0
+        },
+        {
+          "group": "5",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 2924,
+          "zero_percent_of_non_null": 100.0
+        },
+        {
+          "group": "6",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 2548,
+          "zero_percent_of_non_null": 87.14090287277702
+        },
+        {
+          "group": "7",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 1613,
+          "zero_percent_of_non_null": 55.1641586867305
+        },
+        {
+          "group": "8",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 854,
+          "zero_percent_of_non_null": 29.20656634746922
+        },
+        {
+          "group": "9",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 105,
+          "zero_percent_of_non_null": 3.5909712722298224
+        },
+        {
+          "group": "10",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 12,
+          "zero_percent_of_non_null": 0.4103967168262654
+        },
+        {
+          "group": "11",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 12,
+          "zero_percent_of_non_null": 0.4103967168262654
+        },
+        {
+          "group": "12",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 10,
+          "zero_percent_of_non_null": 0.3419972640218878
+        },
+        {
+          "group": "13",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 8,
+          "zero_percent_of_non_null": 0.27359781121751026
+        },
+        {
+          "group": "14",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 8,
+          "zero_percent_of_non_null": 0.27359781121751026
+        },
+        {
+          "group": "15",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 8,
+          "zero_percent_of_non_null": 0.27359781121751026
+        },
+        {
+          "group": "16",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 8,
+          "zero_percent_of_non_null": 0.27359781121751026
+        },
+        {
+          "group": "17",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 10,
+          "zero_percent_of_non_null": 0.3419972640218878
+        },
+        {
+          "group": "18",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 483,
+          "zero_percent_of_non_null": 16.51846785225718
+        },
+        {
+          "group": "19",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 1262,
+          "zero_percent_of_non_null": 43.16005471956224
+        },
+        {
+          "group": "20",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 2058,
+          "zero_percent_of_non_null": 70.38303693570451
+        },
+        {
+          "group": "21",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 2873,
+          "zero_percent_of_non_null": 98.25581395348837
+        },
+        {
+          "group": "22",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 2924,
+          "zero_percent_of_non_null": 100.0
+        },
+        {
+          "group": "23",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 2924,
+          "zero_percent_of_non_null": 100.0
+        }
+      ],
+      "by_month": [
+        {
+          "group": "2019-01",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1812,
+          "zero_percent_of_non_null": 60.88709677419355
+        },
+        {
+          "group": "2019-02",
+          "rows": 2688,
+          "non_null_targets": 2688,
+          "zero_targets": 1517,
+          "zero_percent_of_non_null": 56.436011904761905
+        },
+        {
+          "group": "2019-03",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1511,
+          "zero_percent_of_non_null": 50.772849462365585
+        },
+        {
+          "group": "2019-04",
+          "rows": 2880,
+          "non_null_targets": 2880,
+          "zero_targets": 1320,
+          "zero_percent_of_non_null": 45.83333333333333
+        },
+        {
+          "group": "2019-05",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1215,
+          "zero_percent_of_non_null": 40.82661290322581
+        },
+        {
+          "group": "2019-06",
+          "rows": 2880,
+          "non_null_targets": 2880,
+          "zero_targets": 1119,
+          "zero_percent_of_non_null": 38.854166666666664
+        },
+        {
+          "group": "2019-07",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1192,
+          "zero_percent_of_non_null": 40.053763440860216
+        },
+        {
+          "group": "2019-08",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1306,
+          "zero_percent_of_non_null": 43.884408602150536
+        },
+        {
+          "group": "2019-09",
+          "rows": 2880,
+          "non_null_targets": 2880,
+          "zero_targets": 1403,
+          "zero_percent_of_non_null": 48.71527777777778
+        },
+        {
+          "group": "2019-10",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1697,
+          "zero_percent_of_non_null": 57.022849462365585
+        },
+        {
+          "group": "2019-11",
+          "rows": 2880,
+          "non_null_targets": 2880,
+          "zero_targets": 1709,
+          "zero_percent_of_non_null": 59.34027777777777
+        },
+        {
+          "group": "2019-12",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1858,
+          "zero_percent_of_non_null": 62.43279569892473
+        },
+        {
+          "group": "2020-01",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1810,
+          "zero_percent_of_non_null": 60.81989247311827
+        },
+        {
+          "group": "2020-02",
+          "rows": 2784,
+          "non_null_targets": 2784,
+          "zero_targets": 1569,
+          "zero_percent_of_non_null": 56.35775862068966
+        },
+        {
+          "group": "2020-03",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1514,
+          "zero_percent_of_non_null": 50.873655913978496
+        },
+        {
+          "group": "2020-04",
+          "rows": 2880,
+          "non_null_targets": 2880,
+          "zero_targets": 1302,
+          "zero_percent_of_non_null": 45.208333333333336
+        },
+        {
+          "group": "2020-05",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1206,
+          "zero_percent_of_non_null": 40.524193548387096
+        },
+        {
+          "group": "2020-06",
+          "rows": 2880,
+          "non_null_targets": 2880,
+          "zero_targets": 1110,
+          "zero_percent_of_non_null": 38.54166666666667
+        },
+        {
+          "group": "2020-07",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1184,
+          "zero_percent_of_non_null": 39.784946236559136
+        },
+        {
+          "group": "2020-08",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1310,
+          "zero_percent_of_non_null": 44.01881720430107
+        },
+        {
+          "group": "2020-09",
+          "rows": 2880,
+          "non_null_targets": 2880,
+          "zero_targets": 1409,
+          "zero_percent_of_non_null": 48.92361111111111
+        },
+        {
+          "group": "2020-10",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1617,
+          "zero_percent_of_non_null": 54.33467741935484
+        },
+        {
+          "group": "2020-11",
+          "rows": 2880,
+          "non_null_targets": 2880,
+          "zero_targets": 1730,
+          "zero_percent_of_non_null": 60.06944444444444
+        },
+        {
+          "group": "2020-12",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1844,
+          "zero_percent_of_non_null": 61.96236559139785
+        }
+      ],
+      "irradiance_associations": {
+        "Total solar irradiance (W/m2)": {
+          "zero_irradiance": 34204,
+          "zero_irradiance_zero_power": 34163,
+          "zero_irradiance_positive_power": 41
+        },
+        "Direct normal irradiance (W/m2)": {
+          "zero_irradiance": 26706,
+          "zero_irradiance_zero_power": 22726,
+          "zero_irradiance_positive_power": 3980
+        },
+        "Global horizontal irradiance (W/m2)": {
+          "zero_irradiance": 34245,
+          "zero_irradiance_zero_power": 34189,
+          "zero_irradiance_positive_power": 56
+        }
+      },
+      "interpretation": "Recorded-clock/measurement associations only; no astronomical night classification"
+    },
+    "zero_generation_after": {
+      "zero_count": 35233,
+      "by_hour": [
+        {
+          "group": "0",
+          "rows": 2920,
+          "non_null_targets": 2920,
+          "zero_targets": 2920,
+          "zero_percent_of_non_null": 100.0
+        },
+        {
+          "group": "1",
+          "rows": 2920,
+          "non_null_targets": 2920,
+          "zero_targets": 2920,
+          "zero_percent_of_non_null": 100.0
+        },
+        {
+          "group": "2",
+          "rows": 2920,
+          "non_null_targets": 2920,
+          "zero_targets": 2920,
+          "zero_percent_of_non_null": 100.0
+        },
+        {
+          "group": "3",
+          "rows": 2920,
+          "non_null_targets": 2920,
+          "zero_targets": 2920,
+          "zero_percent_of_non_null": 100.0
+        },
+        {
+          "group": "4",
+          "rows": 2920,
+          "non_null_targets": 2920,
+          "zero_targets": 2920,
+          "zero_percent_of_non_null": 100.0
+        },
+        {
+          "group": "5",
+          "rows": 2920,
+          "non_null_targets": 2920,
+          "zero_targets": 2920,
+          "zero_percent_of_non_null": 100.0
+        },
+        {
+          "group": "6",
+          "rows": 2920,
+          "non_null_targets": 2920,
+          "zero_targets": 2545,
+          "zero_percent_of_non_null": 87.15753424657534
+        },
+        {
+          "group": "7",
+          "rows": 2920,
+          "non_null_targets": 2920,
+          "zero_targets": 1613,
+          "zero_percent_of_non_null": 55.23972602739726
+        },
+        {
+          "group": "8",
+          "rows": 2920,
+          "non_null_targets": 2920,
+          "zero_targets": 854,
+          "zero_percent_of_non_null": 29.246575342465754
+        },
+        {
+          "group": "9",
+          "rows": 2922,
+          "non_null_targets": 2922,
+          "zero_targets": 105,
+          "zero_percent_of_non_null": 3.5934291581108826
+        },
+        {
+          "group": "10",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 12,
+          "zero_percent_of_non_null": 0.4103967168262654
+        },
+        {
+          "group": "11",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 12,
+          "zero_percent_of_non_null": 0.4103967168262654
+        },
+        {
+          "group": "12",
+          "rows": 2921,
+          "non_null_targets": 2921,
+          "zero_targets": 10,
+          "zero_percent_of_non_null": 0.3423485107839781
+        },
+        {
+          "group": "13",
+          "rows": 2922,
+          "non_null_targets": 2922,
+          "zero_targets": 8,
+          "zero_percent_of_non_null": 0.2737850787132101
+        },
+        {
+          "group": "14",
+          "rows": 2921,
+          "non_null_targets": 2921,
+          "zero_targets": 8,
+          "zero_percent_of_non_null": 0.27387880862718245
+        },
+        {
+          "group": "15",
+          "rows": 2921,
+          "non_null_targets": 2921,
+          "zero_targets": 8,
+          "zero_percent_of_non_null": 0.27387880862718245
+        },
+        {
+          "group": "16",
+          "rows": 2923,
+          "non_null_targets": 2923,
+          "zero_targets": 8,
+          "zero_percent_of_non_null": 0.27369141293191923
+        },
+        {
+          "group": "17",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 10,
+          "zero_percent_of_non_null": 0.3419972640218878
+        },
+        {
+          "group": "18",
+          "rows": 2923,
+          "non_null_targets": 2923,
+          "zero_targets": 482,
+          "zero_percent_of_non_null": 16.489907629148135
+        },
+        {
+          "group": "19",
+          "rows": 2920,
+          "non_null_targets": 2920,
+          "zero_targets": 1262,
+          "zero_percent_of_non_null": 43.219178082191775
+        },
+        {
+          "group": "20",
+          "rows": 2922,
+          "non_null_targets": 2922,
+          "zero_targets": 2058,
+          "zero_percent_of_non_null": 70.4312114989733
+        },
+        {
+          "group": "21",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 2873,
+          "zero_percent_of_non_null": 98.25581395348837
+        },
+        {
+          "group": "22",
+          "rows": 2924,
+          "non_null_targets": 2924,
+          "zero_targets": 2924,
+          "zero_percent_of_non_null": 100.0
+        },
+        {
+          "group": "23",
+          "rows": 2921,
+          "non_null_targets": 2921,
+          "zero_targets": 2921,
+          "zero_percent_of_non_null": 100.0
+        }
+      ],
+      "by_month": [
+        {
+          "group": "2019-01",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1812,
+          "zero_percent_of_non_null": 60.88709677419355
+        },
+        {
+          "group": "2019-02",
+          "rows": 2688,
+          "non_null_targets": 2688,
+          "zero_targets": 1517,
+          "zero_percent_of_non_null": 56.436011904761905
+        },
+        {
+          "group": "2019-03",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1511,
+          "zero_percent_of_non_null": 50.772849462365585
+        },
+        {
+          "group": "2019-04",
+          "rows": 2880,
+          "non_null_targets": 2880,
+          "zero_targets": 1320,
+          "zero_percent_of_non_null": 45.83333333333333
+        },
+        {
+          "group": "2019-05",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1215,
+          "zero_percent_of_non_null": 40.82661290322581
+        },
+        {
+          "group": "2019-06",
+          "rows": 2878,
+          "non_null_targets": 2878,
+          "zero_targets": 1119,
+          "zero_percent_of_non_null": 38.88116747741488
+        },
+        {
+          "group": "2019-07",
+          "rows": 2926,
+          "non_null_targets": 2926,
+          "zero_targets": 1162,
+          "zero_percent_of_non_null": 39.71291866028708
+        },
+        {
+          "group": "2019-08",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1306,
+          "zero_percent_of_non_null": 43.884408602150536
+        },
+        {
+          "group": "2019-09",
+          "rows": 2880,
+          "non_null_targets": 2880,
+          "zero_targets": 1403,
+          "zero_percent_of_non_null": 48.71527777777778
+        },
+        {
+          "group": "2019-10",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1697,
+          "zero_percent_of_non_null": 57.022849462365585
+        },
+        {
+          "group": "2019-11",
+          "rows": 2879,
+          "non_null_targets": 2879,
+          "zero_targets": 1708,
+          "zero_percent_of_non_null": 59.32615491490101
+        },
+        {
+          "group": "2019-12",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1858,
+          "zero_percent_of_non_null": 62.43279569892473
+        },
+        {
+          "group": "2020-01",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1810,
+          "zero_percent_of_non_null": 60.81989247311827
+        },
+        {
+          "group": "2020-02",
+          "rows": 2784,
+          "non_null_targets": 2784,
+          "zero_targets": 1569,
+          "zero_percent_of_non_null": 56.35775862068966
+        },
+        {
+          "group": "2020-03",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1514,
+          "zero_percent_of_non_null": 50.873655913978496
+        },
+        {
+          "group": "2020-04",
+          "rows": 2880,
+          "non_null_targets": 2880,
+          "zero_targets": 1302,
+          "zero_percent_of_non_null": 45.208333333333336
+        },
+        {
+          "group": "2020-05",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1206,
+          "zero_percent_of_non_null": 40.524193548387096
+        },
+        {
+          "group": "2020-06",
+          "rows": 2880,
+          "non_null_targets": 2880,
+          "zero_targets": 1110,
+          "zero_percent_of_non_null": 38.54166666666667
+        },
+        {
+          "group": "2020-07",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1184,
+          "zero_percent_of_non_null": 39.784946236559136
+        },
+        {
+          "group": "2020-08",
+          "rows": 2970,
+          "non_null_targets": 2970,
+          "zero_targets": 1310,
+          "zero_percent_of_non_null": 44.107744107744104
+        },
+        {
+          "group": "2020-09",
+          "rows": 2880,
+          "non_null_targets": 2880,
+          "zero_targets": 1409,
+          "zero_percent_of_non_null": 48.92361111111111
+        },
+        {
+          "group": "2020-10",
+          "rows": 2976,
+          "non_null_targets": 2976,
+          "zero_targets": 1617,
+          "zero_percent_of_non_null": 54.33467741935484
+        },
+        {
+          "group": "2020-11",
+          "rows": 2880,
+          "non_null_targets": 2880,
+          "zero_targets": 1730,
+          "zero_percent_of_non_null": 60.06944444444444
+        },
+        {
+          "group": "2020-12",
+          "rows": 2975,
+          "non_null_targets": 2975,
+          "zero_targets": 1844,
+          "zero_percent_of_non_null": 61.983193277310924
+        }
+      ],
+      "irradiance_associations": {
+        "Total solar irradiance (W/m2)": {
+          "zero_irradiance": 34204,
+          "zero_irradiance_zero_power": 34163,
+          "zero_irradiance_positive_power": 41
+        },
+        "Direct normal irradiance (W/m2)": {
+          "zero_irradiance": 26706,
+          "zero_irradiance_zero_power": 22726,
+          "zero_irradiance_positive_power": 3980
+        },
+        "Global horizontal irradiance (W/m2)": {
+          "zero_irradiance": 34245,
+          "zero_irradiance_zero_power": 34189,
+          "zero_irradiance_positive_power": 56
+        }
+      },
+      "interpretation": "Recorded-clock/measurement associations only; no astronomical night classification"
+    },
+    "zero_targets_omitted_for_missing_inputs": 31,
+    "positive_power_zero_ghi_retained": 56,
+    "splits": {
+      "train": {
+        "boundary_start_inclusive": "2019-01-01",
+        "boundary_end_exclusive": "2020-01-01",
+        "rows": 34987,
+        "percent": 49.898739232129614,
+        "start": "2019-01-01 00:00:00",
+        "end": "2019-12-31 23:45:00"
+      },
+      "validation": {
+        "boundary_start_inclusive": "2020-01-01",
+        "boundary_end_exclusive": "2020-07-01",
+        "rows": 17472,
+        "percent": 24.918706144104057,
+        "start": "2020-01-01 00:00:00",
+        "end": "2020-06-30 23:45:00"
+      },
+      "test": {
+        "boundary_start_inclusive": "2020-07-01",
+        "boundary_end_exclusive": "2021-01-01",
+        "rows": 17657,
+        "percent": 25.18255462376633,
+        "start": "2020-07-01 00:00:00",
+        "end": "2020-12-31 23:45:00"
+      }
+    },
+    "output_interval_counts": {
+      "0 days 00:15:00": 70107,
+      "0 days 00:30:00": 3,
+      "0 days 01:15:00": 2,
+      "0 days 00:45:00": 1,
+      "0 days 10:30:00": 1,
+      "0 days 01:45:00": 1
+    }
+  },
+  "output": {
+    "path": "ml/data/processed/solar_site_1_prepared.csv",
+    "rows": 70116,
+    "columns": 16,
+    "predictors": 14,
+    "float_serialization": "17 significant digits; pd.read_csv(float_precision='round_trip') preserves binary measurement values exactly",
+    "sha256": "b9d9bdc9ce32b3cf50c807c7ac8dbcedb2c91009551bf21988d1e58857fbc243"
+  },
+  "omission_log": {
+    "path": "ml/data/processed/solar_site_1_omissions.csv",
+    "rows": 60,
+    "columns": [
+      "source_excel_row",
+      "timestamp",
+      "affected_columns",
+      "reason"
+    ],
+    "sha256": "25bf368cc5e42eee089bce7ac0a9248fe8aa9ad3cdf2d93fb22f143f773b8581"
+  },
+  "limitations": [
+    "Observed contemporaneous inputs do not establish true future forecasting",
+    "Unknown timezone, site coordinates, calibration and input delivery latency",
+    "Unverified capacity, total irradiance plane and AC/DC or interval averaging convention",
+    "Humidity excluded without an invented correction formula",
+    "Complete-case omission may bias coverage; retained neighboring rows may be separated by gaps",
+    "Full-period quality summaries are diagnostic, not model-selection scores"
+  ],
+  "runtime": {
+    "pandas": "2.3.3",
+    "numpy": "2.5.3"
+  }
+}

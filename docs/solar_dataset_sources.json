@@ -1,0 +1,1002 @@
+{
+  "status": "Milestone 5A; discovery and analysis only",
+  "source_hashes": {
+    "data_original.rar": "8b6c22ed7731ba9bc8f0961ad3bd13ad28a707692930c5fa4845f30695c1f4ea",
+    "data_processed.rar": "b16f2238a3fab5ec4e327afcb0574479dd31117c77738387807790414ef3e0f4",
+    "ml/data/processed/wind_site_1_prepared.csv": "46e108ca29e4eaeedcee791c6725fb557b99d3fdbfaa61b1f1b34cd3bcf2d803",
+    "ml/data/raw/wind/Wind farm site 1 (Nominal capacity-99MW).xlsx": "c7b6c86e80fa1f36c7547bcbb17205dc063c554981f07620fa3a2e7ec463fddc",
+    "requirements.txt": "92f6cd408a92f6ee74c8ad05b8e45dda80123f71df73028b54c78f8c52ee8815",
+    "Solar station site 1 (Nominal capacity-50MW).xlsx": "09714eb3f3a1cde6ddb69d459f7a02dde8d3c21f37455deb3546924b51b128ee",
+    "SS_correlation.png": "7d6f1453b7c92d418e5075d9f45e768a5e225bbdcb807456ea68c8b6993eb3b5",
+    "WF_correlation.png": "e0786b06a09d855b79faec782138d92043fb56f5b6bafb1a7903cf6f9af40d7c",
+    "Wind farm site 1 (Nominal capacity-99MW).xlsx": "c7b6c86e80fa1f36c7547bcbb17205dc063c554981f07620fa3a2e7ec463fddc"
+  },
+  "selected_dataset": "Solar station site 1 (Nominal capacity-50MW).xlsx",
+  "datasets": [
+    {
+      "file": "data_original.rar!data_original/solar_stations/Solar station site 1 (Nominal capacity-50MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "sheet1",
+      "size_bytes": 3738807,
+      "sha256": "09714eb3f3a1cde6ddb69d459f7a02dde8d3c21f37455deb3546924b51b128ee",
+      "rows": 70176,
+      "columns_count": 8,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 70176,
+          "parsed": 70176,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-12-31 23:45:00+00:00",
+          "unique_timestamps": 70176,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": true,
+          "interval_counts": {
+            "0 days 00:15:00": 70175
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 0
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [
+          "Relative humidity (%)"
+        ],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 50.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "data_original.rar!data_original/solar_stations/Solar station site 2 (Nominal capacity-130MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "sheet1",
+      "size_bytes": 4365111,
+      "sha256": "1bdf865eb23f3ee98e739f7cc86721cf3d91a580cf2b94f82f1cd2d62b200c22",
+      "rows": 70176,
+      "columns_count": 8,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 70176,
+          "parsed": 70176,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-12-31 23:45:00+00:00",
+          "unique_timestamps": 70176,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": true,
+          "interval_counts": {
+            "0 days 00:15:00": 70175
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 0
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horicontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [
+          "Relative humidity (%)"
+        ],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 130.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "data_original.rar!data_original/solar_stations/Solar station site 3 (Nominal capacity-30MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "Sheet1",
+      "size_bytes": 3444470,
+      "sha256": "dffce71b0be0c720667e52e4a97fcf51d05cf3a377342098e8d803f029bc6997",
+      "rows": 52608,
+      "columns_count": 8,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 52608,
+          "parsed": 52608,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-07-01 23:45:00+00:00",
+          "unique_timestamps": 52608,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": true,
+          "interval_counts": {
+            "0 days 00:15:00": 52607
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 0
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [
+          "Relative humidity (%)"
+        ],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 30.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "data_original.rar!data_original/solar_stations/Solar station site 4 (Nominal capacity-130MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "Sheet1",
+      "size_bytes": 6487609,
+      "sha256": "d3df78341d461c18b7d2f1e24d4fdb7851921f24cf4106c53088abd99c5e3d39",
+      "rows": 70176,
+      "columns_count": 8,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 70176,
+          "parsed": 70176,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-12-31 23:45:00+00:00",
+          "unique_timestamps": 70176,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": true,
+          "interval_counts": {
+            "0 days 00:15:00": 70175
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 0
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [
+          "Relative humidity (%)"
+        ],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 130.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "data_original.rar!data_original/solar_stations/Solar station site 5 (Nominal capacity-110MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "Sheet1",
+      "size_bytes": 3465493,
+      "sha256": "8cf5a5766b9003d3c3d44e743d9058d7751a150776fab8201db0ef745f5a2799",
+      "rows": 70176,
+      "columns_count": 8,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 70176,
+          "parsed": 70176,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-12-31 23:45:00+00:00",
+          "unique_timestamps": 70176,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": true,
+          "interval_counts": {
+            "0 days 00:15:00": 70175
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 0
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [
+          "Relative humidity (%)"
+        ],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 110.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "data_original.rar!data_original/solar_stations/Solar station site 6 (Nominal capacity-35MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "Sheet1",
+      "size_bytes": 4284319,
+      "sha256": "54fb85b49b3ebc3855e564a39595758653ce78019e48ac87e548f506b6b4c552",
+      "rows": 70176,
+      "columns_count": 8,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 70176,
+          "parsed": 70176,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-12-31 23:45:00+00:00",
+          "unique_timestamps": 70176,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": true,
+          "interval_counts": {
+            "0 days 00:15:00": 70175
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 0
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [
+          "Relative humidity (%)"
+        ],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 35.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "data_original.rar!data_original/solar_stations/Solar station site 7 (Nominal capacity-30MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "Sheet1",
+      "size_bytes": 4302012,
+      "sha256": "fdc21df380a114bcb8a3e5379ecc545395ed55b15d7c8c4efc898bc2eb1980ec",
+      "rows": 70176,
+      "columns_count": 8,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 70176,
+          "parsed": 70176,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-12-31 23:45:00+00:00",
+          "unique_timestamps": 70176,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": true,
+          "interval_counts": {
+            "0 days 00:15:00": 70175
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 0
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [
+          "Relative humidity (%)"
+        ],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 30.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "data_original.rar!data_original/solar_stations/Solar station site 8 (Nominal capacity-30MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "Sheet1",
+      "size_bytes": 4716036,
+      "sha256": "69bdb8bc861436246f07861f54924c02d05c90d59210572cb99247deec32ea71",
+      "rows": 69408,
+      "columns_count": 8,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 69408,
+          "parsed": 69408,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-12-31 23:45:00+00:00",
+          "unique_timestamps": 69408,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": false,
+          "interval_counts": {
+            "0 days 00:15:00": 69401,
+            "1 days 00:15:00": 5,
+            "3 days 00:15:00": 1
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 768
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [
+          "Relative humidity (%)"
+        ],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 30.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "data_processed.rar!data_processed/solar_stations/Solar station site 1 (Nominal capacity-50MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "sheet1",
+      "size_bytes": 3377039,
+      "sha256": "ccb7f6dc63a98ff95205e81498998e7fdae742704e933e96453f6718c7b69119",
+      "rows": 70176,
+      "columns_count": 7,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 70176,
+          "parsed": 70176,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-12-31 23:45:00+00:00",
+          "unique_timestamps": 70176,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": true,
+          "interval_counts": {
+            "0 days 00:15:00": 70175
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 0
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 50.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "data_processed.rar!data_processed/solar_stations/Solar station site 2 (Nominal capacity-130MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "sheet1",
+      "size_bytes": 3983338,
+      "sha256": "dcbf750e13987f97cfef502daf6d589879ae1d95744cdc79c5329e3212678ac8",
+      "rows": 70176,
+      "columns_count": 7,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 70176,
+          "parsed": 70176,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-12-31 23:45:00+00:00",
+          "unique_timestamps": 70176,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": true,
+          "interval_counts": {
+            "0 days 00:15:00": 70175
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 0
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 130.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "data_processed.rar!data_processed/solar_stations/Solar station site 3 (Nominal capacity-30MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "Sheet1",
+      "size_bytes": 1069047,
+      "sha256": "0742f9176dad3bbb17fb848c9db6eceed95dbe8bc462b9028ed58f8c50a806bd",
+      "rows": 20352,
+      "columns_count": 7,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 20352,
+          "parsed": 20352,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2019-07-31 23:45:00+00:00",
+          "unique_timestamps": 20352,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": true,
+          "interval_counts": {
+            "0 days 00:15:00": 20351
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 0
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [],
+        "humidity": [
+          "Relative humidity (%)"
+        ],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 30.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "data_processed.rar!data_processed/solar_stations/Solar station site 4 (Nominal capacity-130MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "Sheet1",
+      "size_bytes": 6479911,
+      "sha256": "6fcf340bb0a38ea3d7915017923d3dca9a5c6e9a13e6c247d18b58d07efda55a",
+      "rows": 70176,
+      "columns_count": 8,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 70176,
+          "parsed": 70176,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-12-31 23:45:00+00:00",
+          "unique_timestamps": 70176,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": true,
+          "interval_counts": {
+            "0 days 00:15:00": 70175
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 0
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [
+          "Relative humidity (%)"
+        ],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 130.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "data_processed.rar!data_processed/solar_stations/Solar station site 5 (Nominal capacity-110MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "Sheet1",
+      "size_bytes": 3470280,
+      "sha256": "6108a327be357302c84b88540e96c09eaa2dbc90f9b42694aad7b2066db56734",
+      "rows": 70176,
+      "columns_count": 8,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 70176,
+          "parsed": 70176,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-12-31 23:45:00+00:00",
+          "unique_timestamps": 70176,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": true,
+          "interval_counts": {
+            "0 days 00:15:00": 70175
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 0
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [
+          "Relative humidity (%)"
+        ],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 110.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "data_processed.rar!data_processed/solar_stations/Solar station site 6 (Nominal capacity-35MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "Sheet1",
+      "size_bytes": 4285324,
+      "sha256": "16e46e1688c30ecc0bd282c493ba39ea7ad4e0526889f6a480a6c4b7aeac43e5",
+      "rows": 70176,
+      "columns_count": 8,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 70176,
+          "parsed": 70176,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-12-31 23:45:00+00:00",
+          "unique_timestamps": 70176,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": true,
+          "interval_counts": {
+            "0 days 00:15:00": 70175
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 0
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [
+          "Relative humidity (%)"
+        ],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 35.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "data_processed.rar!data_processed/solar_stations/Solar station site 7 (Nominal capacity-30MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "Sheet1",
+      "size_bytes": 4460611,
+      "sha256": "b3795fada607263cf797c830ec705ecf200907329c87992f4e7d5261e0250317",
+      "rows": 70176,
+      "columns_count": 8,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 70176,
+          "parsed": 70176,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-12-31 23:45:00+00:00",
+          "unique_timestamps": 70176,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": true,
+          "interval_counts": {
+            "0 days 00:15:00": 70175
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 0
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [
+          "Relative humidity (%)"
+        ],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 30.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "data_processed.rar!data_processed/solar_stations/Solar station site 8 (Nominal capacity-30MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "Sheet1",
+      "size_bytes": 4717372,
+      "sha256": "3aa5aad30407eb0c3070156b7db1df8296ff17722ed1463d4c14c320ee09f1ad",
+      "rows": 69408,
+      "columns_count": 8,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 69408,
+          "parsed": 69408,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-12-31 23:45:00+00:00",
+          "unique_timestamps": 69408,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": false,
+          "interval_counts": {
+            "0 days 00:15:00": 69401,
+            "1 days 00:15:00": 5,
+            "3 days 00:15:00": 1
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 768
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [
+          "Relative humidity (%)"
+        ],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 30.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    },
+    {
+      "file": "Solar station site 1 (Nominal capacity-50MW).xlsx",
+      "format": ".xlsx",
+      "sheet": "sheet1",
+      "size_bytes": 3738807,
+      "sha256": "09714eb3f3a1cde6ddb69d459f7a02dde8d3c21f37455deb3546924b51b128ee",
+      "rows": 70176,
+      "columns_count": 8,
+      "time": {
+        "Time(year-month-day h:m:s)": {
+          "column": "Time(year-month-day h:m:s)",
+          "status": "parsed diagnostic copy",
+          "non_null": 70176,
+          "parsed": 70176,
+          "parse_failures": 0,
+          "ambiguous_day_month_values": 0,
+          "missing": 0,
+          "earliest": "2019-01-01 00:00:00+00:00",
+          "latest": "2020-12-31 23:45:00+00:00",
+          "unique_timestamps": 70176,
+          "duplicate_timestamps": 0,
+          "ascending_valid_values": true,
+          "descending_valid_values": false,
+          "timezone": "not documented in values (naive)",
+          "estimated_frequency": "0 days 00:15:00",
+          "regular_unique_spacing": true,
+          "interval_counts": {
+            "0 days 00:15:00": 70175
+          },
+          "note": "UTC suffix in diagnostic bounds is not evidence of source timezone; frequency uses sorted unique valid values.",
+          "missing_intervals_on_modal_grid": 0
+        }
+      },
+      "feature_groups": {
+        "irradiance": [
+          "Total solar irradiance (W/m2)",
+          "Direct normal irradiance (W/m2)",
+          "Global horizontal irradiance (W/m2)"
+        ],
+        "temperature": [
+          "Air temperature  (°C) "
+        ],
+        "humidity": [
+          "Relative humidity (%)"
+        ],
+        "pressure": [
+          "Atmosphere (hpa)"
+        ],
+        "wind": [],
+        "cloud": [],
+        "solar_angle": [],
+        "site_metadata": []
+      },
+      "filename_capacity_label_mw": 50.0,
+      "target_columns": [
+        "Power (MW)"
+      ]
+    }
+  ],
+  "unresolved": "Source URL/license and processing history; site coordinates/timezone; filename nominal versus installed capacity; AC/DC power and metering/interval-average convention; irradiance plane and meaning of total versus global; sensor offsets and sentinels; curtailment/outages and negative output; true nighttime classification; observed versus forecast-weather availability. Publisher-labelled processed tables must not be assumed leakage-free.\n"
+}

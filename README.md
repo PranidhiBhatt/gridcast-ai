@@ -9,8 +9,8 @@ information can support renewable energy planning. The long-term goal is to
 forecast solar and wind generation, compare supply with demand, identify grid
 imbalances, and recommend actions with economic and environmental context.
 
-The project foundation, dataset inspection, Site 1 wind preparation, baseline
-estimation and advanced wind model comparison are implemented. These models
+The project foundation, wind and solar dataset inspection/preparation, baseline
+wind and solar estimation, and advanced wind model comparison are implemented. These models
 estimate power at the same timestamp as their weather inputs. True future
 forecasting and grid intelligence remain planned.
 
@@ -42,7 +42,7 @@ recommendations, and economic and environmental impact analysis.
 - PostgreSQL persistence and a React interface.
 
 Live ingestion and forecasting remain planned. Offline Site 1 cleaning, feature
-engineering, same-timestamp wind power estimation and controlled model comparison
+engineering, same-timestamp wind and solar power estimation and controlled model comparison
 are implemented.
 
 ## Technology Stack
@@ -53,6 +53,7 @@ are implemented.
 | Testing | pytest, HTTPX, FastAPI TestClient | Health, data preparation and model comparison tests |
 | Data preparation | Pandas, NumPy, openpyxl | Inspection, cleaning and feature engineering |
 | Wind estimation | scikit-learn, joblib, threadpoolctl | Baselines plus HistGradientBoosting and GradientBoosting comparison |
+| Solar estimation | scikit-learn, joblib, threadpoolctl | Mean, scaled linear regression and fixed random forest baselines |
 | Database | PostgreSQL | Planned |
 | Frontend | React | Planned |
 
@@ -77,15 +78,23 @@ gridcast-ai/
 │   │   ├── data_inspector.py
 │   │   ├── run_wind_analysis.py
 │   │   ├── wind_preprocessor.py
-│   │   └── run_wind_preprocessing.py
+│   │   ├── run_wind_preprocessing.py
+│   │   ├── solar_data_inspector.py
+│   │   ├── run_solar_analysis.py
+│   │   ├── solar_preprocessor.py
+│   │   └── run_solar_preprocessing.py
 │   ├── models/
 │   │   ├── __init__.py
 │   │   ├── wind_baseline.py
-│   │   └── wind_advanced.py
+│   │   ├── wind_advanced.py
+│   │   ├── solar_baseline.py
+│   │   └── solar_advanced.py
 │   ├── training/
 │   │   ├── __init__.py
 │   │   ├── train_wind_baseline.py
-│   │   └── train_wind_advanced.py
+│   │   ├── train_wind_advanced.py
+│   │   ├── train_solar_baseline.py
+│   │   └── train_solar_advanced.py
 │   └── artifacts/              # Ignored generated models, predictions and metrics
 ├── tests/
 │   ├── __init__.py
@@ -93,7 +102,11 @@ gridcast-ai/
 │   ├── test_data_inspector.py
 │   ├── test_wind_preprocessor.py
 │   ├── test_wind_baseline.py
-│   └── test_wind_advanced.py
+│   ├── test_wind_advanced.py
+│   ├── test_solar_data_inspector.py
+│   ├── test_solar_preprocessor.py
+│   ├── test_solar_baseline.py
+│   └── test_solar_advanced.py
 ├── docs/
 │   ├── .gitkeep
 │   ├── dataset_sources.json
@@ -101,7 +114,13 @@ gridcast-ai/
 │   ├── wind_feature_manifest.json
 │   ├── wind_preprocessing_report.md
 │   ├── wind_baseline_model_report.md
-│   └── wind_advanced_model_report.md
+│   ├── wind_advanced_model_report.md
+│   ├── solar_dataset_analysis.md
+│   ├── solar_dataset_sources.json
+│   ├── solar_feature_manifest.json
+│   ├── solar_preprocessing_report.md
+│   ├── solar_baseline_model_report.md
+│   └── solar_advanced_model_report.md
 ├── .gitignore
 ├── .env.example
 ├── README.md
@@ -115,7 +134,7 @@ serialized `.joblib`/`.pkl` models are excluded from Git.
 
 ## Current Development Status
 
-**Milestone 4 — Advanced Wind Power Model Comparison**
+**Milestone 5D — Advanced Solar Model Evaluation**
 
 Milestone 0 remains unchanged: project structure, a minimal FastAPI application
 with API metadata, the health endpoint, and its test. Milestone 1 adds reusable
@@ -128,7 +147,57 @@ Milestone 4 compares fixed HistGradientBoosting and GradientBoosting configurati
 with two feature sets, validation-only selection, residual/error analysis and a
 single held-out test evaluation for the selected model.
 
-No true future forecasting, solar/demand models, grid decision engine, economic
+Milestone 5A adds independent, read-only solar discovery and full-table quality
+analysis across the extracted workbook and solar archive members. Milestone 5B
+adds semantic review and reproducible Site 1 solar preparation. Milestone 5C
+adds three training-only solar estimation baselines and chronological evaluation.
+Milestone 5D compares one fixed HistGradientBoosting configuration and one fixed
+ExtraTrees configuration, preserving the 5B data/features/splits and 5C baseline.
+
+Reproduce from the project root with existing dependencies and libarchive-compatible
+`tar` on PATH:
+
+```sh
+python -m ml.data_processing.run_solar_analysis
+```
+
+The runner uses `solar_data_inspector.py` alongside the unchanged generic inspection
+utilities. It reads archive members in memory and verifies SHA-256 checksums before
+and after inspection, and against its previous manifest on reruns. It writes only
+[the solar analysis report](docs/solar_dataset_analysis.md) and
+[the solar source metadata](docs/solar_dataset_sources.json). Raw files remain at
+their discovered locations. Synthetic tests are in `tests/test_solar_data_inspector.py`.
+
+Reproduce solar preprocessing with the existing dependencies:
+
+```sh
+python -m ml.data_processing.run_solar_preprocessing
+```
+
+The runner verifies the original root workbook against the Milestone 5A SHA-256,
+converts exactly `-99` in six named weather columns to missing in memory, and
+excludes unresolved humidity from predictors without inventing a correction.
+It omits 60 rows missing required inputs and retains 70,116 rows with five original
+measurements and nine recorded-clock calendar predictors. Zero power is preserved:
+31 zero-target rows are omitted only because required weather is missing; 35,233
+zero targets and all 56 positive-power/zero-GHI observations remain.
+
+Outputs are the Git-ignored `ml/data/processed/solar_site_1_prepared.csv` and
+`solar_site_1_omissions.csv`, plus the small
+[feature manifest](docs/solar_feature_manifest.json) and
+[preprocessing report](docs/solar_preprocessing_report.md). The omission log records
+source Excel row, timestamp, affected columns and reasons. No interpolation,
+filling, learned scaling or model training occurs. Annual calendar encodings account
+for leap years; timestamps remain on the recorded clock with no timezone conversion.
+
+The task is **Weather-to-Solar-Power Estimation**: observed irradiance/weather at T
+and calendar features estimate `Power (MW)` at T. This does not establish true
+future forecasting. Source timezone, irradiance geometry, AC/DC/averaging semantics
+and installed capacity remain unresolved. The independently checked solar splits
+are 2019 training (34,987 rows), January–June 2020 validation (17,472), and
+July–December 2020 testing (17,657); no random shuffle or test-based tuning.
+
+No true future forecasting, demand models, grid decision engine, economic
 or environmental calculations, database integration, frontend, or Docker setup
 are included.
 
@@ -323,6 +392,68 @@ complete experiment ledger, residual and time-based errors, power-range errors,
 validation permutation importance and final model metadata. Generated models,
 metrics, predictions and analysis JSON files under `ml/artifacts/` are ignored by
 Git.
+
+## Reproduce Baseline Solar Power Estimation
+
+From the repository root with the existing dependencies installed:
+
+```sh
+python -m ml.training.train_solar_baseline
+```
+
+The runner verifies the Milestone 5B dataset hash, schema, ordered 14-feature
+contract and chronological splits. It fits a training-mean DummyRegressor,
+a StandardScaler/LinearRegression pipeline, and a fixed RandomForestRegressor
+(100 trees, depth 12, minimum leaf size 5, seed 42, one worker).
+Only training data fits models or scaling. Selection uses overall validation MAE,
+then RMSE, then R². All three baselines receive test scores after selection is frozen;
+no random cross-validation, tuning or train+validation refit occurs.
+
+Random forest wins validation MAE (2.1026 MW). Its test MAE is 1.7823 MW,
+RMSE 4.4688 MW and R² 0.8922. Linear regression has slightly better test RMSE
+(4.4117 MW), but test results do not change the validation-selected model.
+All prepared zero targets remain in evaluation. Power-range diagnostics use
+positive training-target tertiles; recorded-hour/month diagnostics do not imply
+verified local solar time.
+
+Read [the solar baseline report](docs/solar_baseline_model_report.md) for full
+train/validation/test metrics, zero/positive subsets, residuals and importance.
+Generated models, metrics, selected-model predictions and best-model metadata
+remain Git-ignored in `ml/artifacts/`, with names beginning `solar_`. The saved
+linear pipeline includes its training-fitted scaler. Repeated runs use identical
+fixed settings; reproducibility depends on the recorded software environment.
+
+These are **Weather-to-Solar-Power Estimation** models using observed inputs at T.
+Future forecasting still requires future-available weather/irradiance inputs,
+an origin, a horizon and an availability policy.
+
+## Reproduce Advanced Solar Model Evaluation
+
+```sh
+python -m ml.training.train_solar_advanced
+```
+
+Exactly two candidates use the unchanged 14-feature manifest and training-only
+fits. Selection ranks validation MAE, RMSE, then R². The predeclared replacement
+threshold requires at least 1% validation MAE improvement over Random Forest;
+this is an experiment rule, not statistical or operational significance.
+
+ExtraTrees is selected: validation MAE 2.0506 MW versus Random Forest's 2.1026 MW
+(2.47% reduction). Only ExtraTrees receives a test evaluation in 5D: MAE 1.7488 MW,
+RMSE 4.1004 MW, R² 0.9093. The test period was already reported in 5C and is not
+a previously unseen benchmark. No test-based reselection, tuning, random CV,
+preprocessing change or new dependency is introduced.
+
+Read [the advanced solar report](docs/solar_advanced_model_report.md) for fixed
+parameters, both validation results and focused diagnostics. Positive-generation
+test MAE remains 3.5738 MW, versus 0.0303 MW on zero-generation observations.
+Observed contemporaneous weather/irradiance estimation is not future forecasting.
+
+Two candidate models and three small JSON artifacts remain Git-ignored under
+`ml/artifacts/`. The best-model metadata points to the selected saved estimator.
+Reruns verify input, code and output hashes and reuse the completed evaluation;
+an interrupted final evaluation fails clearly rather than silently repeating it.
+No prediction CSV or plots are generated for 5D.
 
 ## API Documentation
 
