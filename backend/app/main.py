@@ -1,4 +1,7 @@
 from fastapi import FastAPI
+from pathlib import Path
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
@@ -24,6 +27,14 @@ def health() -> dict[str, str]:
 
 
 models = ModelStore()
+
+STATIC = Path(__file__).parent / "static"
+app.mount("/static", StaticFiles(directory=STATIC), name="static")
+
+
+@app.get("/", include_in_schema=False)
+def dashboard():
+    return FileResponse(STATIC / "index.html")
 
 
 @app.exception_handler(ModelError)

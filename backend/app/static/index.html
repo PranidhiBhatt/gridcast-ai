@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GridCast AI — Renewable Grid Analysis</title><link rel="stylesheet" href="/static/styles.css"><script defer src="/static/app.js"></script></head>
+<body>
+<header class="topbar"><a class="brand" href="/" aria-label="GridCast AI home"><span class="logo">G</span>GridCast <b>AI</b></a><span class="tag">DECISION SUPPORT · DEMONSTRATION</span><a href="/docs">API documentation ↗</a></header>
+<main>
+<section class="hero"><div><p class="eyebrow">WEATHER-TO-ENERGY INTELLIGENCE PLATFORM</p><h1>Understand your<br><span>renewable energy picture.</span></h1><p class="subtitle">Weather-to-Energy Intelligence for Renewable Grid Analysis</p><p>Estimate renewable generation from weather inputs and analyse the resulting supply-demand situation.</p></div><aside class="hero-note"><span class="spark">↗</span><strong>From inputs to insight</strong><p>Weather inputs → Power estimates → Grid analysis → Impact estimates</p><small>Model estimates and impact values are for decision-support demonstration purposes.</small></aside></section>
+<section class="system panel" aria-label="System status"><div class="section-heading"><h2>Component availability</h2><button id="refresh" class="text-button" type="button">Refresh status ↻</button></div><div id="system-status" class="status-grid" aria-live="polite">Checking component availability…</div></section>
+<div class="workspace">
+<section class="panel inputs"><div class="section-heading"><div><p class="eyebrow">01 / CONFIGURE</p><h2>Your analysis inputs</h2></div><button id="example" type="button" class="secondary" disabled>Load Example</button></div><p class="muted">User-provided inputs. No weather or demand feed is connected.</p>
+<p id="example-note" class="notice" hidden>Illustrative scenario loaded — not real measurements. Review the prepared feature values before use.</p>
+<form id="analysis-form" novalidate><fieldset id="input-fields"><div class="core-fields">
+<label>Observation timestamp<input id="timestamp" type="datetime-local" step="1" required><small>Recorded clock; no timezone is inferred.</small></label>
+<label>Electricity demand <span>MW</span><input id="demand" type="number" min="0" step="any" required placeholder="e.g. 50"></label>
+<label>Analysis interval <span>hours</span><input id="interval" type="number" min="0.000000001" step="any" required placeholder="e.g. 0.25"><small>Used to convert power estimates (MW) into energy estimates (MWh).</small></label></div>
+<p class="muted">Supply every prepared feature. Calendar and direction encodings are not generated when the timestamp changes.</p>
+<details open class="input-group"><summary>≋ Wind Weather Inputs <span id="wind-count"></span></summary><div id="wind-inputs" class="feature-grid"><p>Loading model contract…</p></div></details>
+<details open class="input-group"><summary>☼ Solar Weather Inputs <span id="solar-count"></span></summary><div id="solar-inputs" class="feature-grid"><p>Loading model contract…</p></div></details>
+<div class="run-row"><button id="run" class="primary" type="submit" disabled>Run Grid Analysis →</button><small>Results use the backend's documented assumptions.</small></div></fieldset></form>
+<div id="message" role="alert" tabindex="-1" hidden></div></section>
+<section class="results" aria-label="Analysis results"><div id="empty" class="panel empty"><div class="empty-icon">⌁</div><p class="eyebrow">02 / EXPLORE</p><h2>Your energy story starts here.</h2><p>Load the illustrative example or enter prepared model inputs, then run an analysis.</p><div class="empty-steps"><span>01 · Estimate</span><span>02 · Compare</span><span>03 · Understand</span></div></div>
+<div id="results" hidden><div class="section-heading"><div><p class="eyebrow">02 / RESULTS</p><h2>Renewable overview</h2></div><span id="result-time" class="muted"></span></div>
+<p id="stale" class="notice" hidden>Inputs have changed. These results belong to the previous submission.</p>
+<div id="cards" class="metric-grid"></div>
+<section class="panel mix"><div class="section-heading"><h2>Renewable mix</h2><span id="mix-total"></span></div><div class="mix-bar" aria-hidden="true"><div id="wind-bar"></div><div id="solar-bar"></div></div><div id="mix-labels" class="mix-labels"></div></section>
+<section id="grid-panel" class="panel"><div class="section-heading"><h2>Grid intelligence</h2><span id="grid-badge" class="badge"></span></div><p id="gap-detail"></p><p id="explanation"></p><h3>Rule-Based Recommendations</h3><div id="recommendations"></div><p class="fine">Recommendations are decision-support suggestions and are not executed automatically.</p></section>
+<div class="impact-grid"><section class="panel"><p class="eyebrow">ASSUMPTION-DRIVEN ESTIMATE</p><h2>Economic impact</h2><div id="economic"></div></section><section class="panel"><p class="eyebrow">ESTIMATED ENVIRONMENTAL IMPACT</p><h2>Environmental impact</h2><div id="environmental"></div><p class="fine">Based on configured assumptions and not verified real-world emissions.</p></section></div>
+<details class="panel assumptions"><summary>Assumptions used & impact limitations</summary><div id="assumptions"></div></details></div></section></div>
+<details class="panel model-info"><summary>Model information <span class="muted">Models, required features & limitations</span></summary><p>These models estimate power from observed/contemporaneous weather inputs. They are not future forecasting models.</p><div id="model-info" class="impact-grid"></div></details>
+<section class="limitations"><h2>A clear view of the limits</h2><p>Limited dataset coverage and unresolved sensor/source semantics constrain interpretation. Impact values depend on assumptions. Grid advice follows fixed rules. This system does not control real grid infrastructure.</p></section>
+</main><footer><span>GridCast AI</span><span>Weather inputs. Explainable insights. Human decisions.</span></footer>
+</body></html>

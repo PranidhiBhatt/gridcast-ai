@@ -1,0 +1,56 @@
+{
+  "timestamp": "2020-01-01T00:00:00",
+  "wind": {
+    "features": {
+      "Wind speed at height of 10 meters (m/s)": 5,
+      "Wind speed at height of 30 meters (m/s)": 5,
+      "Wind speed at height of 50 meters (m/s)": 5,
+      "Wind speed - at the height of wheel hub(m/s)": 5,
+      "Wind direction at height of 10 meters (˚)": 180,
+      "Wind direction at height of 30 meters (˚)": 180,
+      "Wind direction at height of 50 meters (˚)": 180,
+      "Air temperature  (°C) ": 15,
+      "Atmosphere (hpa)": 920,
+      "Relative humidity (%)": 50,
+      "hour": 0,
+      "day_of_week": 2,
+      "month": 1,
+      "day_of_year": 1,
+      "quarter": 1,
+      "hour_sin": 0,
+      "hour_cos": 1,
+      "day_of_year_sin": 0.017213356155834685,
+      "day_of_year_cos": 0.9998518392091162,
+      "wind_direction_10m_sin": 0,
+      "wind_direction_10m_cos": -1,
+      "wind_direction_30m_sin": 0,
+      "wind_direction_30m_cos": -1,
+      "wind_direction_50m_sin": 0,
+      "wind_direction_50m_cos": -1
+    }
+  },
+  "solar": {
+    "features": {
+      "Total solar irradiance (W/m2)": 0,
+      "Direct normal irradiance (W/m2)": 0,
+      "Global horizontal irradiance (W/m2)": 0,
+      "Air temperature  (°C) ": 15,
+      "Atmosphere (hpa)": 920,
+      "hour": 0,
+      "day_of_week": 2,
+      "month": 1,
+      "day_of_year": 1,
+      "quarter": 1,
+      "hour_sin": 0,
+      "hour_cos": 1,
+      "annual_sin": 0,
+      "annual_cos": 1
+    }
+  },
+  "grid": {
+    "demand_mw": 50
+  },
+  "impact": {
+    "interval_hours": 0.25
+  }
+}

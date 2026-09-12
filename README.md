@@ -55,7 +55,7 @@ are implemented.
 | Wind estimation | scikit-learn, joblib, threadpoolctl | Baselines plus HistGradientBoosting and GradientBoosting comparison |
 | Solar estimation | scikit-learn, joblib, threadpoolctl | Mean, scaled linear regression and fixed random forest baselines |
 | Database | PostgreSQL | Planned |
-| Frontend | React | Planned |
+| Dashboard | Static HTML, CSS, vanilla JavaScript | Implemented |
 
 Backend, test, data preparation and model comparison dependencies are included in
 `requirements.txt`. No deep-learning or unrelated forecasting frameworks are
@@ -145,7 +145,7 @@ serialized `.joblib`/`.pkl` models are excluded from Git.
 
 ## Current Development Status
 
-**Milestone 9 — FastAPI Integration and Product API**
+**Final Dashboard — GridCast AI**
 
 Milestone 0 remains unchanged: project structure, a minimal FastAPI application
 with API metadata, the health endpoint, and its test. Milestone 1 adds reusable
@@ -215,7 +215,7 @@ are 2019 training (34,987 rows), January–June 2020 validation (17,472), and
 July–December 2020 testing (17,657); no random shuffle or test-based tuning.
 
 No true future forecasting, demand models, autonomous dispatch, live market
-integration, database integration, frontend, or Docker setup
+integration, database integration, or Docker setup
 are included.
 
 ## Setup Instructions
@@ -510,6 +510,18 @@ The scenario assumes all estimated energy displaces conventional generation;
 actual use and displacement are unverified, including for surplus. These outputs
 are not measured savings, verified emissions reductions or carbon accounts.
 No live prices, external services or grid control are introduced.
+
+## Dashboard
+
+From the repository root run `python -m uvicorn backend.app.main:app --reload`,
+then open **http://127.0.0.1:8000/**. No frontend installation or build is needed.
+See [the dashboard guide](docs/dashboard.md).
+
+The dashboard uses user-provided inputs and metadata-generated wind/solar fields.
+Load Example fills a clearly labelled illustrative scenario; Run Grid Analysis
+calls the existing API. Results show weather-to-power estimates, rule-based grid
+decision support and assumption-driven impacts. These are not future forecasts,
+verified savings or verified emissions reductions. No real grid is controlled.
 
 ## Product API
 
