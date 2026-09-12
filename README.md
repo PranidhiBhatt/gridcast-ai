@@ -145,7 +145,7 @@ serialized `.joblib`/`.pkl` models are excluded from Git.
 
 ## Current Development Status
 
-**Milestone 8 — Economic and Environmental Impact Estimation**
+**Milestone 9 — FastAPI Integration and Product API**
 
 Milestone 0 remains unchanged: project structure, a minimal FastAPI application
 with API metadata, the health endpoint, and its test. Milestone 1 adds reusable
@@ -511,9 +511,27 @@ actual use and displacement are unverified, including for surplus. These outputs
 are not measured savings, verified emissions reductions or carbon accounts.
 No live prices, external services or grid control are introduced.
 
+## Product API
+
+Run `python -m uvicorn backend.app.main:app --reload` from the repository root.
+See [the endpoint contracts and full request example](docs/product_api.md).
+
+Endpoints: `GET /health`, `GET /model/info`, `GET /project/status`,
+`POST /estimate/wind`, `POST /estimate/solar`, `POST /estimate/renewable`,
+`POST /grid/analyze`, `POST /impact/analyze`, and `POST /analyze`.
+The primary `/analyze` request separates `wind.features`, `solar.features`,
+`grid.demand_mw` and `impact.interval_hours`, alongside a shared timestamp.
+
+Model inputs use exact saved feature names exposed by `/model/info`. Trained
+artifacts load lazily, are checksum/schema checked, and are cached per process.
+Unavailable models return 503 without retraining or fallback. Numeric-only
+services remain independent of model loading. These are contemporaneous
+weather-to-power estimates, conditional grid advice and assumption-driven impacts;
+there is no true future forecasting, live weather or autonomous grid control.
+
 ## API Documentation
 
-See the unchanged API instructions below. Dataset preparation does not change FastAPI.
+The health response remains unchanged; Swagger documents the product endpoints.
 
 While the server is running, FastAPI provides:
 
