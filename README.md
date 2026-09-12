@@ -97,7 +97,8 @@ gridcast-ai/
 │   │   └── train_solar_advanced.py
 │   ├── services/
 │   │   ├── __init__.py
-│   │   └── renewable_aggregator.py
+│   │   ├── renewable_aggregator.py
+│   │   └── grid_intelligence.py
 │   └── artifacts/              # Ignored generated models, predictions and metrics
 ├── tests/
 │   ├── __init__.py
@@ -110,7 +111,8 @@ gridcast-ai/
 │   ├── test_solar_preprocessor.py
 │   ├── test_solar_baseline.py
 │   ├── test_solar_advanced.py
-│   └── test_renewable_aggregator.py
+│   ├── test_renewable_aggregator.py
+│   └── test_grid_intelligence.py
 ├── docs/
 │   ├── .gitkeep
 │   ├── dataset_sources.json
@@ -125,7 +127,8 @@ gridcast-ai/
 │   ├── solar_preprocessing_report.md
 │   ├── solar_baseline_model_report.md
 │   ├── solar_advanced_model_report.md
-│   └── renewable_aggregation.md
+│   ├── renewable_aggregation.md
+│   └── grid_intelligence.md
 ├── .gitignore
 ├── .env.example
 ├── README.md
@@ -139,7 +142,7 @@ serialized `.joblib`/`.pkl` models are excluded from Git.
 
 ## Current Development Status
 
-**Milestone 6 — Renewable Generation Aggregation**
+**Milestone 7 — Rule-based Grid Intelligence**
 
 Milestone 0 remains unchanged: project structure, a minimal FastAPI application
 with API metadata, the health endpoint, and its test. Milestone 1 adds reusable
@@ -160,6 +163,8 @@ Milestone 5D compares one fixed HistGradientBoosting configuration and one fixed
 ExtraTrees configuration, preserving the 5B data/features/splits and 5C baseline.
 Milestone 6 adds a small aggregation service for already-produced wind and solar
 MW estimates, with explicit complete, partial and unavailable results.
+Milestone 7 compares complete renewable supply with reported demand, using a
+configurable symmetric balance tolerance and deterministic decision-support advice.
 
 Reproduce from the project root with existing dependencies and libarchive-compatible
 `tar` on PATH:
@@ -204,7 +209,7 @@ and installed capacity remain unresolved. The independently checked solar splits
 are 2019 training (34,987 rows), January–June 2020 validation (17,472), and
 July–December 2020 testing (17,657); no random shuffle or test-based tuning.
 
-No true future forecasting, demand models, grid decision engine, economic
+No true future forecasting, demand models, autonomous dispatch, economic
 or environmental calculations, database integration, frontend, or Docker setup
 are included.
 
@@ -474,6 +479,19 @@ See [the aggregation contract and example](docs/renewable_aggregation.md).
 An optional JSON-only helper reads model labels. No model loading, training,
 preprocessing, dataset alignment, API integration or grid decisions are performed.
 Callers must establish compatible time, units and portfolio scope before aggregation.
+
+## Rule-based Grid Intelligence
+
+`ml.services.grid_intelligence.analyze_grid` accepts the aggregation result and
+reported `demand_mw`. It calculates renewable supply minus demand and classifies
+SURPLUS, BALANCED or DEFICIT using an inclusive, symmetric 1 MW default tolerance,
+configurable per call. Percentages use demand as denominator; zero demand returns
+a null percentage. Incomplete supply yields unavailable analysis without a gap.
+
+See [the rules, input contract and example](docs/grid_intelligence.md).
+Recommendations are fixed conditional options for operator review. This component
+does not execute dispatch, establish total-grid adequacy or guarantee safety.
+No API integration, model training or economic/environmental calculations are added.
 
 ## API Documentation
 
