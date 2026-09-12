@@ -18,6 +18,8 @@ venv/
 # ML artifacts and datasets
 *.joblib
 *.pkl
+ml/artifacts/*
+!ml/artifacts/.gitkeep
 ml/data/raw/*
 !ml/data/raw/.gitkeep
 !ml/data/raw/wind/

@@ -9,8 +9,10 @@ information can support renewable energy planning. The long-term goal is to
 forecast solar and wind generation, compare supply with demand, identify grid
 imbalances, and recommend actions with economic and environmental context.
 
-The project foundation, dataset inspection and reproducible Site 1 wind preparation are implemented.
-Forecasting and grid intelligence remain planned.
+The project foundation, dataset inspection, Site 1 wind preparation and baseline
+weather-to-wind-power estimation are implemented. These models estimate power at
+the same timestamp as their weather inputs. True future forecasting and grid
+intelligence remain planned.
 
 ## Problem Statement
 
@@ -39,20 +41,22 @@ recommendations, and economic and environmental impact analysis.
 - Economic and environmental impact analysis.
 - PostgreSQL persistence and a React interface.
 
-Live ingestion and forecasting remain planned. Offline Site 1 cleaning and feature engineering are implemented.
+Live ingestion and forecasting remain planned. Offline Site 1 cleaning, feature
+engineering and same-timestamp wind power estimation are implemented.
 
 ## Technology Stack
 
 | Area | Technology | Status |
 | --- | --- | --- |
 | Backend | Python 3.10+, FastAPI, Uvicorn | Implemented minimal API |
-| Testing | pytest, HTTPX, FastAPI TestClient | Health, inspection and preprocessing tests |
+| Testing | pytest, HTTPX, FastAPI TestClient | Health, data preparation and baseline estimation tests |
 | Data preparation | Pandas, NumPy, openpyxl | Inspection, cleaning and feature engineering |
-| Machine learning | scikit-learn, XGBoost | Planned; not installed |
+| Baseline estimation | scikit-learn, joblib | Mean, linear regression and random forest baselines |
 | Database | PostgreSQL | Planned |
 | Frontend | React | Planned |
 
-Backend, test and data inspection dependencies are included in `requirements.txt`.
+Backend, test, data preparation and baseline estimation dependencies are included
+in `requirements.txt`. No advanced ML frameworks are installed.
 
 ## Project Structure
 
@@ -72,20 +76,26 @@ gridcast-ai/
 │   │   ├── run_wind_analysis.py
 │   │   ├── wind_preprocessor.py
 │   │   └── run_wind_preprocessing.py
-│   ├── models/.gitkeep
-│   ├── training/.gitkeep
-│   └── artifacts/.gitkeep
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── wind_baseline.py
+│   ├── training/
+│   │   ├── __init__.py
+│   │   └── train_wind_baseline.py
+│   └── artifacts/              # Ignored generated models, predictions and metrics
 ├── tests/
 │   ├── __init__.py
 │   ├── test_health.py
 │   ├── test_data_inspector.py
-│   └── test_wind_preprocessor.py
+│   ├── test_wind_preprocessor.py
+│   └── test_wind_baseline.py
 ├── docs/
 │   ├── .gitkeep
 │   ├── dataset_sources.json
 │   ├── wind_dataset_analysis.md
 │   ├── wind_feature_manifest.json
-│   └── wind_preprocessing_report.md
+│   ├── wind_preprocessing_report.md
+│   └── wind_baseline_model_report.md
 ├── .gitignore
 ├── .env.example
 ├── README.md
@@ -99,15 +109,17 @@ serialized `.joblib`/`.pkl` models are excluded from Git.
 
 ## Current Development Status
 
-**Milestone 2 — Wind Data Cleaning and Feature Engineering**
+**Milestone 3 — Baseline Wind Power Estimation**
 
 Milestone 0 remains unchanged: project structure, a minimal FastAPI application
 with API metadata, the health endpoint, and its test. Milestone 1 adds reusable
 read-only inspection, synthetic tests, source hashes and a reproducible wind report.
 Milestone 2 adds in-memory cleaning, audited row omission, deterministic calendar
 and direction features, a chronological split plan and a separate prepared CSV.
+Milestone 3 adds three fixed same-timestamp estimation baselines, chronological
+evaluation, validation-based model selection and reproducible local artifacts.
 
-No ML models, forecasting, grid decision engine, economic
+No true future forecasting, solar/demand models, grid decision engine, economic
 or environmental calculations, database integration, frontend, or Docker setup
 are included.
 
@@ -169,7 +181,7 @@ From the project root with the virtual environment active:
 python -m pytest
 ```
 
-Tests check the health endpoint and inspection utilities using synthetic temporary
+Tests check the health endpoint, data utilities and modelling using synthetic temporary
 datasets. They require neither downloaded datasets nor a running server.
 
 If Windows denies access to its default temporary folder, use:
@@ -234,6 +246,44 @@ table, not a verified operational forecasting matrix. No model is trained.
 Fixed chronological splits are 2019 for training, January–June 2020 for validation,
 and July–December 2020 for testing. No split files or random shuffle are created.
 Rerunning updates only the generated CSV, feature manifest and preprocessing report.
+
+## Reproduce Baseline Wind Power Estimation
+
+From the project root with dependencies installed:
+
+```sh
+python -m ml.training.train_wind_baseline
+```
+
+The task is **Weather-to-Wind-Power Estimation**: weather and calendar features at
+timestamp T estimate `Power (MW)` at T. This is not true future forecasting.
+Observed weather would need replacement with as-issued forecast weather for a
+future target time, with a defined origin, horizon and availability policy.
+
+The runner loads 25 predictors from the existing feature manifest and uses the
+unchanged 70,036-row prepared dataset. It fits a training-mean benchmark, a
+StandardScaler/LinearRegression pipeline, and a random forest with 80 trees,
+depth 12, minimum leaf size 5, seed 42 and one worker. There is no parameter search.
+
+Training uses 2019; validation uses January–June 2020; held-out testing uses
+July–December 2020. Best baseline selection uses validation MAE, then validation
+RMSE for ties, and is frozen before test evaluation. No model is refitted on
+validation or test, and no predictions are clipped to improve metrics.
+
+Read [the model report](docs/wind_baseline_model_report.md) for all train,
+validation and test metrics, feature availability, overfitting observations and
+random forest importance. Importance describes model usage, not causation.
+
+Generated artifacts under `ml/artifacts/` are Git-ignored:
+
+- `dummy_baseline.joblib`, `linear_regression.joblib`, `random_forest_baseline.joblib`.
+- `wind_baseline_metrics.json`, `wind_baseline_feature_importance.json`.
+- `wind_validation_predictions.csv`, `wind_test_predictions.csv` (selected model only).
+
+The linear model artifact includes its training-fitted scaler. The runner records
+input/code hashes, library versions and fixed settings without volatile timestamps.
+It preserves the input datasets and preprocessing code. Reproducibility is assessed
+within the same software environment; other versions can differ numerically.
 
 ## API Documentation
 
