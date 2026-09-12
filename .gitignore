@@ -1,0 +1,34 @@
+# Python cache and test output
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+venv/
+.venv/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# ML artifacts and datasets
+*.joblib
+*.pkl
+ml/data/raw/*
+!ml/data/raw/.gitkeep
+ml/data/processed/*
+!ml/data/processed/.gitkeep
+
+# Frontend dependencies
+node_modules/
+
+# IDE and build files
+.vscode/
+.idea/
+dist/
+build/
+*.egg-info/
