@@ -22,6 +22,13 @@
 <div id="results" hidden><div class="section-heading"><div><p class="eyebrow">02 / RESULTS</p><h2>Renewable overview</h2></div><span id="result-time" class="muted"></span></div>
 <p id="stale" class="notice" hidden>Inputs have changed. These results belong to the previous submission.</p>
 <div id="cards" class="metric-grid"></div>
+<section class="panel prediction-insights" aria-labelledby="prediction-title"><div class="section-heading"><div><p class="eyebrow">MODEL OUTPUT / WIND</p><h2 id="prediction-title">Prediction Insights</h2></div><span class="badge BALANCED">Observed-input estimates</span></div>
+<div id="prediction-summary" class="prediction-summary"></div>
+<p class="fine">The API returns one estimate for the submitted timestamp. Next-hour, 24-hour average and forecast trend are unavailable: no hourly future prediction series is produced.</p>
+<div class="section-heading"><h3>Wind Energy Forecast</h3><span id="prediction-count" class="muted"></span></div>
+<p class="muted">Available model estimates only — not a future forecast. Up to 24 submissions from this page session, latest submission first. Repeating a timestamp replaces its previous entry.</p>
+<div class="prediction-table-wrap"><table class="prediction-table"><caption class="fine">Wind speed is the submitted hub-height feature when available, otherwise the first named wind-speed feature. Exact field shown beneath each value.</caption><thead><tr><th scope="col">Date & Time</th><th scope="col">Predicted Wind Generation</th><th scope="col">Wind Speed</th><th scope="col">Forecast Status</th></tr></thead><tbody id="prediction-rows"></tbody></table></div>
+<p id="prediction-basis" class="fine"></p></section>
 <section class="panel mix"><div class="section-heading"><h2>Renewable mix</h2><span id="mix-total"></span></div><div class="mix-bar" aria-hidden="true"><div id="wind-bar"></div><div id="solar-bar"></div></div><div id="mix-labels" class="mix-labels"></div></section>
 <section id="grid-panel" class="panel"><div class="section-heading"><h2>Grid intelligence</h2><span id="grid-badge" class="badge"></span></div><p id="gap-detail"></p><p id="explanation"></p><h3>Rule-Based Recommendations</h3><div id="recommendations"></div><p class="fine">Recommendations are decision-support suggestions and are not executed automatically.</p></section>
 <div class="impact-grid"><section class="panel"><p class="eyebrow">ASSUMPTION-DRIVEN ESTIMATE</p><h2>Economic impact</h2><div id="economic"></div></section><section class="panel"><p class="eyebrow">ESTIMATED ENVIRONMENTAL IMPACT</p><h2>Environmental impact</h2><div id="environmental"></div><p class="fine">Based on configured assumptions and not verified real-world emissions.</p></section></div>

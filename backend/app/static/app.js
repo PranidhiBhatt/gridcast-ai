@@ -2,6 +2,7 @@
 const $ = id => document.getElementById(id);
 const fields = {wind: new Map(), solar: new Map()};
 let ready = false, busy = false;
+let predictionHistory = [];
 const number = value => typeof value === "number" && Number.isFinite(value);
 const fmt = (value, unit = "") => number(value) ? `${new Intl.NumberFormat(undefined, {maximumFractionDigits: 2}).format(value)}${unit ? ` ${unit}` : ""}` : "Unavailable";
 function el(tag, text, className) {
@@ -109,9 +110,47 @@ $("example").addEventListener("click", async () => {
 function valueRow(container, label, value) {
   const row = el("div", undefined, "value-row"); row.append(el("span", label), el("strong", value)); container.append(row);
 }
-function render(data) {
+function renderPredictionInsights(data, request) {
+  const power = data.wind?.wind_power_mw;
+  if (number(power) && power >= 0) {
+    const speeds = Object.entries(request.wind.features).filter(([name]) => /wind speed/i.test(name));
+    const speed = speeds.find(([name]) => /hub/i.test(name)) || speeds[0];
+    // Keep only comparable model outputs, never extrapolate future observations.
+    predictionHistory = predictionHistory.filter(row => row.model === data.wind.model_name && row.timestamp !== data.timestamp);
+    predictionHistory.unshift({timestamp: data.timestamp, power, model: data.wind.model_name,
+      speed: speed?.[1], speedName: speed?.[0], illustrative: !$("example-note").hidden});
+    predictionHistory = predictionHistory.slice(0, 24);
+  }
+  $("prediction-summary").replaceChildren();
+  [["Latest predicted wind generation", fmt(power, "MW"), "Submitted timestamp estimate"],
+   ["Next Hour Forecast", "Unavailable", "No future-hour model output"],
+   ["24-Hour Forecast Average", "Unavailable", "No complete hourly forecast horizon"],
+   ["Forecast Trend", "Unavailable", "One timestamp per API response"]].forEach(([label, value, note]) => {
+     const card = el("div", undefined, "prediction-stat");
+     card.append(el("p", label), el("strong", value), el("small", note)); $("prediction-summary").append(card);
+   });
+  const sorted = predictionHistory.map(row => row.power).sort((a, b) => a - b);
+  const enough = new Set(sorted).size >= 3;
+  const quantile = q => { const i = (sorted.length - 1) * q, lo = Math.floor(i); return sorted[lo] + (sorted[Math.ceil(i)] - sorted[lo]) * (i - lo); };
+  const low = enough ? quantile(1 / 3) : null, high = enough ? quantile(2 / 3) : null;
+  const usable = enough && low < high;
+  $("prediction-rows").replaceChildren();
+  predictionHistory.forEach(row => {
+    const label = !usable ? "Insufficient distribution" : row.power <= low ? "Low Generation" : row.power <= high ? "Moderate Generation" : "High Generation";
+    const tr = el("tr"), time = el("td", row.timestamp || "Unavailable"), speed = el("td", fmt(row.speed));
+    time.append(el("small", row.illustrative ? "Illustrative example / edited example" : "User-provided inputs"));
+    speed.append(el("small", row.speedName || "Wind speed not supplied"));
+    const status = el("td"); status.append(el("span", label, `generation-label ${!usable ? "" : row.power <= low ? "generation-low" : row.power <= high ? "generation-moderate" : "generation-high"}`));
+    tr.append(time, el("td", fmt(row.power, "MW")), speed, status); $("prediction-rows").append(tr);
+  });
+  if (!predictionHistory.length) { const tr = el("tr"), td = el("td", "No valid wind predictions available."); td.colSpan = 4; tr.append(td); $("prediction-rows").append(tr); }
+  $("prediction-count").textContent = `${predictionHistory.length} available estimate${predictionHistory.length === 1 ? "" : "s"}`;
+  $("prediction-basis").textContent = usable ? `Generation bands use this session's model-output tertiles: Low ≤ ${fmt(low, "MW")}; Moderate ≤ ${fmt(high, "MW")}; High above that. Descriptive scenario comparison, not capacity thresholds or a time-series trend.` : "Generation bands need at least three distinct model estimates. No arbitrary low/moderate/high label is assigned to a single point. Session rows may represent different scenarios, not consecutive hours.";
+}
+function render(data, request) {
   const {wind, solar, renewable, grid, impact} = data;
   if (!wind || !solar || !renewable || !grid || !impact) throw new Error("The API response is incomplete. No results were displayed.");
+  renderPredictionInsights(data, request);
   $("result-time").textContent = data.timestamp || "Timestamp unavailable";
   $("cards").replaceChildren();
   const states = {SURPLUS: "↑ SURPLUS", BALANCED: "≈ BALANCED", DEFICIT: "↓ DEFICIT"};
@@ -155,7 +194,7 @@ $("analysis-form").addEventListener("submit", async event => {
   $("results").hidden = true; $("empty").hidden = false;
   try {
     const data = await api("/analyze", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(request)});
-    render(data);
+    render(data, request);
     $("results").scrollIntoView({behavior: "auto", block: "start"});
   } catch (error) { message(error.message); $("message").focus(); }
   finally { busy = false; updateControls(); }
